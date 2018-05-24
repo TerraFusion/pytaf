@@ -1,9 +1,12 @@
 """
-taf.pyx
+pytaf.pyx
 
-simple cython test of accessing a numpy array's data
+simple cython test of accessing advancedFusion functions
 
-the C function: c_multiply multiplies all the values in a 2-d array by a scalar, in place.
+The C functions from advancedFusion:
+
+ * reproject.cpp/clipping 
+ * reproject.cpp/nnInterpolate
 
 """
 
@@ -14,13 +17,14 @@ import numpy as np
 cimport numpy as np
 
 # declare the interface to the C code
-# cdef extern void c_multiply (double* array, double value, int m, int n)
 cdef extern void clipping(double * val, double * mask, int nPixels)
+cdef extern void nnInterpolate(double * souVal, double * tarVal,
+                               int * tarNNSouID, int nTar)
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def clip(np.ndarray[double, ndim=2, mode="c"] val not None,
-             np.ndarray[double, ndim=2, mode="c"] mask not None,
-             int nPixels):
+         np.ndarray[double, ndim=2, mode="c"] mask not None,
+         int nPixels):
     """
     clip(val, mask,  value)
 
@@ -32,3 +36,9 @@ def clip(np.ndarray[double, ndim=2, mode="c"] val not None,
     clipping(&val[0,0], &mask[0,0], nPixels)
     return None
 
+def interpolate_nn(np.ndarray[double, ndim=2, mode="c"] souVal not None,
+                   np.ndarray[double, ndim=2, mode="c"] tarVal not None,
+                   np.ndarray[int, ndim=1, mode="c"] tarNNSouID not None,
+                   int nTar):
+    nnInterpolate(&souVal[0,0], &tarVal[0,0], &tarNNSouID[0], nTar)
+    return None
