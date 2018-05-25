@@ -274,6 +274,98 @@ void clipping(double * val, double * mask, int nPixels)
 	}
 }
 
+void nearestNeighbor(double ** psouLat, double ** psouLon, int nSou, double * tarLat, double * tarLon, int * tarNNSouID, double * tarNNDis, int nTar, double maxR) {
+	double * souLat = *psouLat;
+	double * souLon = *psouLon;
+
+	const double earthRadius = 6367444;
+	double maxradian = maxR / earthRadius;
+	int nBlockY = M_PI / maxradian;
+
+	double blockR = M_PI / nBlockY;
+	
+	int i, j;
+#pragma omp parallel for
+	for(i = 0; i < nSou; i++) {
+		souLat[i] = souLat[i] * M_PI / 180;
+		souLon[i] = souLon[i] * M_PI / 180;
+	}
+
+#pragma omp parallel for
+	for(i = 0; i < nTar; i++) {
+		tarLat[i] = tarLat[i] * M_PI / 180;
+		tarLon[i] = tarLon[i] * M_PI / 180;
+	}
+
+	int * souID;
+	if(NULL == (souID = (int *)malloc(sizeof(double) * nSou))) {
+		printf("ERROR: Out of memory at line %d in file %s\n", __LINE__, __FILE__);
+		exit(1);
+	}
+	int * souIndex = pointIndexOnLat(psouLat, psouLon, souID, nSou, nBlockY);
+	souLat = *psouLat;
+	souLon = *psouLon;
+
+
+#pragma omp parallel for private(j)
+	for(i = 0; i < nTar; i ++) {
+
+		double tLat = tarLat[i];
+		double tLon = tarLon[i];
+		double sLat, sLon;
+		
+		double pDis;	
+		double nnDis;
+		int nnSouID;
+
+		int blockID = (tLat + M_PI / 2) / blockR;
+		int startBlock = blockID - 1;
+		int endBlock = blockID + 1;
+
+		if(startBlock < 0) {
+			startBlock = 0;
+		}
+		if(endBlock > nBlockY - 1) {
+			endBlock = nBlockY - 1;
+		}
+
+		nnDis = -1;
+		
+		for(j = souIndex[startBlock]; j < souIndex[endBlock+1]; j++) {
+			
+			sLat = souLat[j];
+			sLon = souLon[j];
+
+			pDis = acos(sin(tLat) * sin(sLat) + cos(tLat) * cos(sLat) * cos(tLon - sLon));
+				
+			if((nnDis < 0 || nnDis > pDis) && pDis <= maxradian) {
+				nnDis = pDis;
+				nnSouID = souID[j];
+			}
+				
+		}
+
+		if(nnDis < 0) {
+			tarNNSouID[i] = -1;
+			if(tarNNDis != NULL) {
+				tarNNDis[i] = -1;
+			}
+		}
+		else {
+			tarNNSouID[i] = nnSouID;
+			if(tarNNDis != NULL) {
+				tarNNDis[i] = nnDis * earthRadius;
+			}
+		}
+	
+		 
+	}
+	free(souID);
+	free(souIndex);
+	
+	return;	
+}
+
 void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou,
                                double * tarLat, double * tarLon,
                                int * tarNNSouID, double * tarNNDis,

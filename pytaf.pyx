@@ -19,6 +19,10 @@ cimport numpy as np
 
 # declare the interface to the C code
 cdef extern void clipping(double * val, double * mask, int nPixels)
+cdef extern void nearestNeighbor(double ** psouLat, double ** psouLon, int nSou,
+                                 double * tarLat, double * tarLon,
+                                 int * tarNNSouID, double * tarNNDis,
+                                 int nTar, double maxR)
 cdef extern void nearestNeighborBlockIndex(
     double ** psouLat, double ** psouLon, int nSou,
     double * tarLat, double * tarLon, int * tarNNSouID,
@@ -44,7 +48,23 @@ def clip(np.ndarray[double, ndim=2, mode="c"] val not None,
     clipping(&val[0,0], &mask[0,0], nPixels)
     return None
 
-
+def find_nn(np.ndarray[double, ndim=2, mode="c"] psouLat not None,
+            np.ndarray[double, ndim=2, mode="c"] psouLon not None,
+            int nSou,
+            np.ndarray[double, ndim=2, mode="c"] tarLat not None,
+            np.ndarray[double, ndim=2, mode="c"] tarLon not None,
+            np.ndarray[int, ndim=1, mode="c"] tarNNSouID not None,        
+            np.ndarray[double, ndim=2, mode="c"] tarNNDis not None,
+            int nTar, double maxR):
+    
+    # See [1] for handling double pointers. 
+    cdef double* pLat = &psouLat[0,0]
+    cdef double* pLon = &psouLon[0,0]
+    
+    nearestNeighbor(&pLat, &pLon, nSou,
+                    &tarLat[0,0], &tarLon[0,0], &tarNNSouID[0],
+                    &tarNNDis[0,0], nTar, maxR)    
+        
 def find_nn_block_index(
         np.ndarray[double, ndim=2, mode="c"] psouLat not None,
         np.ndarray[double, ndim=2, mode="c"] psouLon not None,
