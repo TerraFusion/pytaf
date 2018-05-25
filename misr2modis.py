@@ -5,6 +5,8 @@ import numpy as np
 # Open BF file.
 file_name = '/Users/hyoklee/Downloads/TERRA_BF_L1B_O69626_20130119123228_F000_V000.h5'
 with h5py.File(file_name, 'r') as f:
+    # TODO: Read destination geo-location datasets.
+    
     # Read MISR / AN / Blue_Radiance dataset.
     misr_dset = f['/MISR/AN/Data_Fields/Blue_Radiance']
     misr_data = misr_dset[0,:,:].astype(np.float64)
@@ -21,7 +23,7 @@ print(modis_data[0,0:10])
 print(misr_data[0,0:10])
 
 # TODO: On what dataset interpolate should be called?
-# Do some processing in io.cpp and AF_output_MODIS/MISR.cpp.
+# Do some processing in io.cpp, af_run.cpp, and AF_output_MODIS/MISR.cpp.
 pytaf.interpolate_nn(modis_data, misr_data, c, 3)
 print(misr_data[0,0:10])
 
@@ -29,4 +31,6 @@ print(misr_data[0,0:10])
 f2 = h5py.File('misr_on_modis.h5', 'w')
 dset = f2.create_dataset('/Target/Data_Fields/MISR_Radiance', data=misr_data)
 dset2 = f2.create_dataset('/Source/Data_Fields/MODIS_Radiance', data=modis_data)
+
+# TODO: Add CF attributes on dataset.
 f2.close()
