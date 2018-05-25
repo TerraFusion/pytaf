@@ -178,6 +178,7 @@ struct LonBlocks* pointIndexOnLatLon(double ** plat, double ** plon,
 
 int * pointIndexOnLat(double ** plat, double ** plon,  int * oriID, int count, int nBlockY) {
 
+        int i = 0;
 	double *lat = *plat;
 	double *lon = *plon;
 
@@ -201,14 +202,14 @@ int * pointIndexOnLat(double ** plat, double ** plon,  int * oriID, int count, i
 		exit(1);
 	}
 
-	for(int i = 0; i < nBlockY; i++)
+	for(i = 0; i < nBlockY; i++)
 	{
 		pointsInB[i] = 0;
 	}
 
 	int blockID;
 		
-	for(int i = 0; i < count; i++) {
+	for(i = 0; i < count; i++) {
 	
 		blockID = (int)((lat[i] + M_PI/2) / blockR);
 		
@@ -218,7 +219,7 @@ int * pointIndexOnLat(double ** plat, double ** plon,  int * oriID, int count, i
 	}
 
 	index[0] = 0;
-	for(int i = 1; i < nBlockY + 1; i++) {
+	for(i = 1; i < nBlockY + 1; i++) {
 		index[i] = index[i - 1] + pointsInB[i - 1];
 	}
 
@@ -232,11 +233,11 @@ int * pointIndexOnLat(double ** plat, double ** plon,  int * oriID, int count, i
 	}
 	
 	pointsInB[0] = 0;
-	for(int i = 1; i < nBlockY; i++) {
+	for(i = 1; i < nBlockY; i++) {
 		pointsInB[i] = index[i];
 	}
 	
-	for(int i = 0; i < count; i++) {
+	for(i = 0; i < count; i++) {
 		
 		blockID = (int)((lat[i] + M_PI/2) / blockR);
 		if(blockID >= 0 && blockID < nBlockY) {
@@ -265,7 +266,8 @@ int * pointIndexOnLat(double ** plat, double ** plon,  int * oriID, int count, i
 
 void clipping(double * val, double * mask, int nPixels)
 {
-	for(int i = 0; i < nPixels; i++)
+        int i = 0;
+	for(i = 0; i < nPixels; i++)
 	{
 		if(mask[i] == -999)
 		{
@@ -540,7 +542,8 @@ void summaryInterpolate(double * souVal, int * souNNTarID, int nSou,
                         double * tarVal, double * tarSD, int * nSouPixels,
                         int nTar) {
 
-	for(int i = 0; i < nTar; i++) {
+        int i = 0;
+	for(i = 0; i < nTar; i++) {
 	
 		tarVal[i] = 0;
 		if (tarSD != NULL) {
@@ -550,7 +553,7 @@ void summaryInterpolate(double * souVal, int * souNNTarID, int nSou,
 	}
 
 	int nnTarID;
-	for(int i = 0; i < nSou; i++) {
+	for(i = 0; i < nSou; i++) {
 		
 		nnTarID = souNNTarID[i];
 		if(nnTarID > 0 && souVal[i] >= 0) {
@@ -563,7 +566,7 @@ void summaryInterpolate(double * souVal, int * souNNTarID, int nSou,
 	}
 
 
-	for(int i = 0; i < nTar; i++) {
+	for(i = 0; i < nTar; i++) {
 	
 		if(nSouPixels[i] > 0) {
 			tarVal[i] = tarVal[i] / nSouPixels[i];
