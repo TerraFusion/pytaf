@@ -1,10 +1,30 @@
+"""
+This example code illustrates how to access and visualize a TerraFusion
+Advanced Fusion file in Python.
+
+Usage:  save this script and run
+
+    $python modis2ug.py
+
+The HDF file must be in your current working directory.
+
+Tested under: Python 2.7.15 :: Anaconda custom (64-bit)
+Last updated: 2019-02-21
+"""
 import h5py
 import pytaf
 import numpy as np
 import gdal
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+# If you encounter PROJ_LIB key error on Python3,
+# please run:
+#
+# $export PROJ_LIB=~/anaconda3/share/proj/
 
 # Open AF file.
-file_name = '/Users/hyoklee/Downloads/misr_on_modis_SrcLowAnAfBlueGreen_Trg1KM8_9_69365.h5'
+file_name = 'misr_on_modis_SrcLowAnAfBlueGreen_Trg1KM8_9_69365.h5'
 
 # Generate lat/lon from GDAL.
 #
@@ -30,10 +50,10 @@ nx, ny = (360*20, 180*20)
 x = np.linspace(x0, x0 + xinc*nx, nx)
 y = np.linspace(y0, y0 + yinc*ny, ny)
 lon, lat = np.meshgrid(x, y)
-print(lon[0,0])
+print(lon[ny-1,nx-1])
+print(lat[ny-1,nx-1])
+# exit(1)
 with h5py.File(file_name, 'r') as f:
-    
-
     # Read MODIS Radiance dataset.
     modis_dset = f['/Target/Data_Fields/MODIS_Radiance']
     modis_data = modis_dset[0,:,:].astype(np.float64)
@@ -41,9 +61,9 @@ with h5py.File(file_name, 'r') as f:
     # Read source lat/lon dataset.
     modis_ds_lat = f['/Geolocation/Latitude']
     modis_lat = modis_ds_lat[:,:].astype(np.float64)
-
     modis_ds_lon = f['/Geolocation/Longitude']
     modis_lon = modis_ds_lon[:,:].astype(np.float64)
+f.close()
 
 # Set max radius.
 M_PI=3.14159265358979323846
@@ -51,7 +71,7 @@ earthRadius = 6367444
 max_r = earthRadius * cellSize * M_PI / 180
 
 index = np.arange(nx*ny, dtype=np.int32)
-distance = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
+distance = np.arange(nx*ny, dtype=np.float64).reshape((ny,nx))
 
 # Kent: try nnInterploate first.
 # In the summaryInterpolate, tarSD and nSouPixels are also output parameters.
@@ -60,6 +80,8 @@ print(n_src)
 n_trg = nx * ny;
 print(n_trg)
 
+lat_orig = lat.copy()
+lon_orig = lon.copy()
 # Find indexes of nearest neighbor point.
 pytaf.find_nn_block_index(modis_lat, modis_lon,
                           n_src,
@@ -67,22 +89,24 @@ pytaf.find_nn_block_index(modis_lat, modis_lon,
                           index, distance,
                           n_trg,
                           max_r)
+# The above function modifies lat value. Bug?
+print(lat[ny-1,nx-1])
+print(lat_orig[ny-1,nx-1])
 print('Finished generating index.')
 # Get values for target.
-trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
+trg_data = np.arange(nx*ny, dtype=np.float64).reshape((ny,nx))
 pytaf.interpolate_nn(modis_data, trg_data, index, n_trg)
 print(trg_data)
 print('Finished retrieving data with index.')
 
 # Open file for writing.
-f2 = h5py.File('modis_on_ug.h5', 'w')
-dset = f2.create_dataset('/Target/Data_Fields/UG_Radiance', data=trg_data)
-dset2 = f2.create_dataset('/Source/Data_Fields/MODIS_Radiance', data=modis_data)
+f2 = h5py.File('modis2ug.h5', 'w')
+dset = f2.create_dataset('/UG_Radiance', data=trg_data)
+dset_lat = f2.create_dataset('/Latitude', data=lat_orig)
+dset_lon = f2.create_dataset('/Longitude', data=lon_orig)
 
 # TODO: Add CF attributes on dataset.
 f2.close()
-
-# TODO: Plot data.
 
 # References
 # [1] https://github.com/TerraFusion/advancedFusion/blob/master/src/AFtool.cpp
