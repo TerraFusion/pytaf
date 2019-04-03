@@ -52,5 +52,6 @@ m.drawmeridians(np.arange(-180, 180., 45.), labels=[0, 0, 0, 1])
 m.scatter(modis_lon, modis_lat, c=datam, s=1,
           edgecolors=None, linewidth=0)
 fig = plt.gcf()
+fig.suptitle('{0}'.format(file_name))
 pngfile = file_name+'.py.png'
 fig.savefig(pngfile)
