@@ -16,7 +16,8 @@ Here is the workflow. The [AFtool.cpp](https://github.com/TerraFusion/advancedFu
 dataset that corresponds to target lat/lon.
 4. Use pytaf.interpolate_nn() function to retrieve values from the source
 using the indices.
-5. Plot data for comparison or save data in netCDF-4/HDF5/GeoTIFF.
+5. Plot data for comparison or save the interpolated data in HDF5 dataset.
+6. In the future, may save the data in  netcdf-4 or geotiff.
 
 See [modis2ug.py](modis2ug.py) for the complete code.
 
