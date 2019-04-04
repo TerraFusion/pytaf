@@ -1,5 +1,5 @@
 """
-This example code illustrates how to access and visualize a TerraFusion
+This example code illustrates how to access and reproject a TerraFusion
 Advanced Fusion file in Python.
 
 Usage:  save this script and run
@@ -8,20 +8,13 @@ Usage:  save this script and run
 
 The HDF file must be in your current working directory.
 
-Tested under: Python 2.7.15 :: Anaconda custom (64-bit)
-Last updated: 2019-02-21
+Tested under: Python 3.6.6 :: Anaconda custom (64-bit)
+Last updated: 2019-04-03
 """
 import h5py
 import pytaf
 import numpy as np
 import gdal
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
-# If you encounter PROJ_LIB key error on Python3,
-# please run:
-#
-# $export PROJ_LIB=~/anaconda3/share/proj/
 
 # Open AF file.
 file_name = 'misr_on_modis_SrcLowAnAfBlueGreen_Trg1KM8_9_69365.h5'
@@ -46,7 +39,6 @@ file_name = 'misr_on_modis_SrcLowAnAfBlueGreen_Trg1KM8_9_69365.h5'
 cellSize = 0.05
 x0, xinc, y0, yinc = (-180, cellSize, 90, -cellSize)
 nx, ny = (360*20, 180*20)
-# nx, ny = (360, 180)
 x = np.linspace(x0, x0 + xinc*nx, nx)
 y = np.linspace(y0, y0 + yinc*ny, ny)
 lon, lat = np.meshgrid(x, y)

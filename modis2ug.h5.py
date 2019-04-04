@@ -45,10 +45,6 @@ m = Basemap(projection='cyl', resolution='l',
 m.drawcoastlines(linewidth=0.5)
 m.drawparallels(np.arange(-90., 120., 30.), labels=[1, 0, 0, 0])
 m.drawmeridians(np.arange(-180, 180., 45.), labels=[0, 0, 0, 1])
-# Render the image in the projected coordinate system.
-# s = 1000
-# m.pcolormesh(modis_lon[::s,::s], modis_lat[::s,::s], modis_data[::s,::s],
-#              latlon=True)
 m.scatter(modis_lon, modis_lat, c=datam, s=1,
           edgecolors=None, linewidth=0)
 fig = plt.gcf()

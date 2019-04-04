@@ -15,3 +15,6 @@ e = np.arange(12, dtype=np.float64).reshape((3,4))
 f = np.arange(12, dtype=np.float64).reshape((3,4))
 pytaf.find_nn_block_index(d, e, 3, a, b, c, f, 3, 90.0)
 print(b)
+g = pytaf.resample(a, b, d, e, f)
+print(g)
+

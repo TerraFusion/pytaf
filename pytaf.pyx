@@ -7,6 +7,7 @@ The C functions from advancedFusion:
 
  * reproject.cpp/clipping 
  * reproject.cpp/nnInterpolate
+ ...
 
 """
 
@@ -102,6 +103,20 @@ def interpolate_summary(np.ndarray[double, ndim=2, mode="c"] souVal not None,
                        &tarVal[0,0], &tarSD[0,0], &nSouPixels[0], nTar)
     return None
 
+# Test no argument.
+def resample(np.ndarray[double, ndim=2, mode="c"] psouLat not None,
+             np.ndarray[double, ndim=2, mode="c"] psouLon not None,
+             np.ndarray[double, ndim=2, mode="c"] ptarLat not None,
+             np.ndarray[double, ndim=2, mode="c"] ptarLon not None,             
+             np.ndarray[double, ndim=2, mode="c"] psouVal not None,
+             ):
+    # Get shape of lat/lon [2].
+    nx = ptarLat.shape[0]
+    ny = ptarLat.shape[1]
+    trg_data = np.arange(nx*ny, dtype=np.float64).reshape((ny,nx))
+    return trg_data
+    
 # References
 #
 # [1] https://stackoverflow.com/questions/40413858/how-to-handle-double-pointer-in-c-wrapping-by-cython
+# [2] https://github.com/cython/cython/wiki/tutorials-NumpyPointerToC
