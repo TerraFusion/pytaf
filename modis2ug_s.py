@@ -60,12 +60,18 @@ f.close()
 # Set max radius.
 M_PI=3.14159265358979323846
 earthRadius = 6367444
-max_r = earthRadius * cellSize * M_PI / 180
-
-index = np.arange(nx*ny, dtype=np.int32)
-distance = np.arange(nx*ny, dtype=np.float64).reshape((ny,nx))
+size = 5040
+max_r = earthRadius * size * M_PI / 180
 
 n_src = modis_lat.size;
+sx = modis_lat.shape[0]
+sy = modis_lat.shape[1]
+
+index = np.arange(n_src, dtype=np.int32)
+distance = np.arange(n_src, dtype=np.float64).reshape((sy,sx))
+
+
+
 print(n_src)
 n_trg = nx * ny;
 print(n_trg)
@@ -74,12 +80,20 @@ lat_orig = lat.copy()
 lon_orig = lon.copy()
 
 # Find indexes of nearest neighbor point.
-pytaf.find_nn_block_index(modis_lat, modis_lon,
-                          n_src,
-                          lat, lon,
-                          index, distance,
+# pytaf.find_nn_block_index(modis_lat, modis_lon,
+#                           n_src,
+#                           lat, lon,
+#                           index, distance,
+#                           n_trg,
+#                           max_r)
+
+pytaf.find_nn_block_index(lat, lon,
                           n_trg,
-                          max_r)
+                          modis_lat, modis_lon,
+                          index, distance,
+                          n_src,
+#                          max_r)
+                          size)
 
 # The above function modifies lat and lon values. Bug?
 print(lat[ny-1,nx-1])
@@ -92,7 +106,7 @@ trg_data = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
 tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
 nSouPixels = np.arange(n_trg, dtype=np.int32)
 
-pytaf.interpolate_summary(modis_data, index, nx*ny,
+pytaf.interpolate_summary(modis_data, index, n_src,
                           trg_data, tarSD, nSouPixels, n_trg)
 print(trg_data)
 print('Finished retrieving data with index.')
