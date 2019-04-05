@@ -109,58 +109,90 @@ def check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
     if psouLat.ndim != 2:
         print('No. of source latitude dimensions should be 2.')
         return False
-    
     if psouLon.ndim != 2:
         print('No. of source longitude dimensions should be 2.')
         return False
-    if ptarLat.ndim != 2:
-        print('No. of target latitude dimensions should be 2.')
+    if ptarLat.ndim < 1 and ptarLat.ndim > 2:
+        print('No. of target latitude dimensions should be 1 or 2.')
         return False
-    if ptarLon.ndim != 2:
-        print('No. of target longitude dimensions should be 2.')
+    if ptarLon.ndim < 1 and ptarLon.ndim > 2:
+        print('No. of target longitude dimensions should be 1 or 2.')
+        return False
+    if ptarLat.ndim != ptarLon.ndim:
+        print('Target lat/lon dimension sizes do not match.')
+        print('Lat dim = '+str(ptarLat.ndim))
+        print('Lon dim = '+str(ptarLon.ndim))        
         return False
     if psouVal.ndim != 2:
         print('No. of source value dimensions should be 2.')
         return False
     return True
 
-def resample_n(psouLat not None,
-               psouLon not None,
-               ptarLat not None,
-               ptarLon not None,
-               psouVal not None,
-               float r
-             ):
+
+def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
-        return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r)
+        if ptarLat.ndim == 1:
+            # Generate 2d lat/lon.
+            lat, lon = np.meshgrid(ptarLon, ptarLat)
+            latd = np.array(lat, dtype='float64')
+            lond = np.array(lon, dtype='float64')
+            return resample(psouLat, psouLon,
+                            latd, lond,
+                            psouVal, r)
+        else:
+            return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r)
     else:
         return None
 
 # Wrapper for getting the target values using the nearest neighbor summary.
-def resample_s(psouLat not None,
-               psouLon not None,
-               ptarLat not None,
-               ptarLon not None,
-               psouVal not None,
-               float r):
+def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
-        return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r)
+        if ptarLat.ndim == 1:
+            # Generate 2d lat/lon.
+            lat, lon = np.meshgrid(ptarLon, ptarLat)
+            latd = np.array(lat, dtype='float64')
+            lond = np.array(lon, dtype='float64')
+            return resample(psouLat, psouLon,
+                            latd, lond,
+                            psouVal, r, True)
+        else:
+            return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r
+                            ,True)
     else:
         return None
 
 # Wrapper for getting the target values.
-def resample(np.ndarray[double, ndim=2, mode="c"] psouLat not None,
-             np.ndarray[double, ndim=2, mode="c"] psouLon not None,
-             np.ndarray[double, ndim=2, mode="c"] ptarLat not None,
-             np.ndarray[double, ndim=2, mode="c"] ptarLon not None,
-             np.ndarray[double, ndim=2, mode="c"] psouVal not None,
-             float r):
+def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
+             float r, s=False):
     # Get the shape of lat/lon [2].
     nx = ptarLat.shape[0]
     ny = ptarLat.shape[1]
+    n_trg = nx * ny;
+    trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
+    index = np.arange(nx*ny, dtype=np.int32)
+    distance = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
     
-    trg_data = np.arange(nx*ny, dtype=np.float64).reshape((ny,nx))
-    
+    if s is True:
+        print('calling resample_s')
+        find_nn_block_index(ptarLat, ptarLon,
+                            n_trg,
+                            psouLat, psouLon,
+                            index, distance,
+                            psouVal.size,
+                            r)        
+        tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
+        nSouPixels = np.arange(n_trg, dtype=np.int32)
+        
+        interpolate_summary(psouVal, index, psouVal.szie,
+                            trg_data, tarSD, nSouPixels, n_trg)
+    else:
+        find_nn_block_index(psouLat, psouLon,
+                            psouLat.size,
+                            ptarLat, ptarLon,
+                            index, distance,
+                            n_trg,
+                            r)
+        interpolate_nn(psouVal, trg_data, index, n_trg)
     return trg_data
 
 
