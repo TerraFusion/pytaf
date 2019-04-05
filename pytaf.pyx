@@ -181,7 +181,7 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
                             r)        
         tarSD = np.arange(n_trg, dtype=np.float64).reshape((nx,ny))
         nSouPixels = np.arange(n_trg, dtype=np.int32)
-        interpolate_summary(psouVal, index, psouVal.szie,
+        interpolate_summary(psouVal, index, psouVal.size,
                             trg_data, tarSD, nSouPixels, n_trg)
     else:
         print('using nn interpolation')        

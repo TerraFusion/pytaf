@@ -12,9 +12,13 @@ print(b)
 d = np.arange(12, dtype=np.float64).reshape((3,4))
 print(d.shape)
 e = np.arange(12, dtype=np.float64).reshape((3,4))
+c1 = np.arange(3, dtype=np.int32)
+pytaf.interpolate_summary(a, c, a.size, d, e, c, d.size)
+print(c1)
 f = np.arange(12, dtype=np.float64).reshape((3,4))
 pytaf.find_nn_block_index(d, e, 3, a, b, c, f, 3, 90.0)
 print(b)
+
 # radius
 r = 5555
 
