@@ -15,6 +15,11 @@ e = np.arange(12, dtype=np.float64).reshape((3,4))
 f = np.arange(12, dtype=np.float64).reshape((3,4))
 pytaf.find_nn_block_index(d, e, 3, a, b, c, f, 3, 90.0)
 print(b)
-g = pytaf.resample(a, b, d, e, f)
+# radius
+r = 5555 
+g = pytaf.resample_n(a, b, d, e, f, r)
 print(g)
-
+# Test dimension size error.
+h = np.arange(12, dtype=np.float64).reshape((3,2,2))
+i = pytaf.resample_n(h, b, d, e, f, r)
+j = pytaf.resample_s(a, b, d, e, h, r)

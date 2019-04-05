@@ -103,32 +103,67 @@ def interpolate_summary(np.ndarray[double, ndim=2, mode="c"] souVal not None,
                        &tarVal[0,0], &tarSD[0,0], &nSouPixels[0], nTar)
     return None
 
+# Check dimensions.
+def check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
+    # Return error if dimension size is not 2.
+    if psouLat.ndim != 2:
+        print('No. of source latitude dimensions should be 2.')
+        return False
+    
+    if psouLon.ndim != 2:
+        print('No. of source longitude dimensions should be 2.')
+        return False
+    if ptarLat.ndim != 2:
+        print('No. of target latitude dimensions should be 2.')
+        return False
+    if ptarLon.ndim != 2:
+        print('No. of target longitude dimensions should be 2.')
+        return False
+    if psouVal.ndim != 2:
+        print('No. of source value dimensions should be 2.')
+        return False
+    return True
+
+def resample_n(psouLat not None,
+               psouLon not None,
+               ptarLat not None,
+               ptarLon not None,
+               psouVal not None,
+               float r
+             ):
+    if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
+        return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r)
+    else:
+        return None
+
+# Wrapper for getting the target values using the nearest neighbor summary.
+def resample_s(psouLat not None,
+               psouLon not None,
+               ptarLat not None,
+               ptarLon not None,
+               psouVal not None,
+               float r):
+    if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
+        return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r)
+    else:
+        return None
+
 # Wrapper for getting the target values.
 def resample(np.ndarray[double, ndim=2, mode="c"] psouLat not None,
              np.ndarray[double, ndim=2, mode="c"] psouLon not None,
              np.ndarray[double, ndim=2, mode="c"] ptarLat not None,
-             np.ndarray[double, ndim=2, mode="c"] ptarLon not None,             
+             np.ndarray[double, ndim=2, mode="c"] ptarLon not None,
              np.ndarray[double, ndim=2, mode="c"] psouVal not None,
-             ):
+             float r):
     # Get the shape of lat/lon [2].
     nx = ptarLat.shape[0]
     ny = ptarLat.shape[1]
+    
     trg_data = np.arange(nx*ny, dtype=np.float64).reshape((ny,nx))
     
     return trg_data
 
-# Wrapper for summary.
-def resample_s(np.ndarray[double, ndim=2, mode="c"] psouLat not None,
-               np.ndarray[double, ndim=2, mode="c"] psouLon not None,
-               np.ndarray[double, ndim=2, mode="c"] ptarLat not None,
-               np.ndarray[double, ndim=2, mode="c"] ptarLon not None,
-               np.ndarray[double, ndim=2, mode="c"] psouVal not None,
-             ):
-    nx = ptarLat.shape[0]
-    ny = ptarLat.shape[1]
-    trg_data = np.arange(nx*ny, dtype=np.float64).reshape((ny,nx))
-    
-    return trg_data
+
 
 # References
 #
