@@ -10,12 +10,11 @@ The C functions from advancedFusion:
  ...
 
 """
-
-import cython
-from ctypes import *
+import numpy as np
+cimport cython
+# from ctypes import *
 
 # import both numpy and the Cython declarations for numpy
-import numpy as np
 cimport numpy as np
 
 # declare the interface to the C code
@@ -61,7 +60,7 @@ def find_nn(np.ndarray[double, ndim=2, mode="c"] psouLat not None,
     # See [1] for handling double pointers. 
     cdef double* pLat = &psouLat[0,0]
     cdef double* pLon = &psouLon[0,0]
-    
+
     nearestNeighbor(&pLat, &pLon, nSou,
                     &tarLat[0,0], &tarLon[0,0], &tarNNSouID[0],
                     &tarNNDis[0,0], nTar, maxR)    
@@ -79,7 +78,6 @@ def find_nn_block_index(
     # See [1] for handling double pointers. 
     cdef double* pLat = &psouLat[0,0]
     cdef double* pLon = &psouLon[0,0]
-    
     nearestNeighborBlockIndex(&pLat, &pLon, nSou,
                               &tarLat[0,0], &tarLon[0,0], &tarNNSouID[0],
                               &tarNNDis[0,0], nTar, maxR)
@@ -156,8 +154,8 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
                             latd, lond,
                             psouVal, r, True)
         else:
-            return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r
-                            ,True)
+            return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
+                            True)
     else:
         return None
 
@@ -168,24 +166,25 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
     nx = ptarLat.shape[0]
     ny = ptarLat.shape[1]
     n_trg = nx * ny;
-    trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
+    # trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
+    trg_data = np.zeros((nx,ny), dtype=psouVal.dtype)
     index = np.arange(nx*ny, dtype=np.int32)
     distance = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
     
     if s is True:
-        print('calling resample_s')
+        print('using summary interpolation')
         find_nn_block_index(ptarLat, ptarLon,
                             n_trg,
                             psouLat, psouLon,
                             index, distance,
                             psouVal.size,
                             r)        
-        tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
+        tarSD = np.arange(n_trg, dtype=np.float64).reshape((nx,ny))
         nSouPixels = np.arange(n_trg, dtype=np.int32)
-        
         interpolate_summary(psouVal, index, psouVal.szie,
                             trg_data, tarSD, nSouPixels, n_trg)
     else:
+        print('using nn interpolation')        
         find_nn_block_index(psouLat, psouLon,
                             psouLat.size,
                             ptarLat, ptarLon,
@@ -194,9 +193,6 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
                             r)
         interpolate_nn(psouVal, trg_data, index, n_trg)
     return trg_data
-
-
-
 # References
 #
 # [1] https://stackoverflow.com/questions/40413858/how-to-handle-double-pointer-in-c-wrapping-by-cython

@@ -9,5 +9,6 @@ setup(
   cmdclass = {'build_ext':build_ext},
   ext_modules = cythonize([Extension("pytaf",
                                      sources=["pytaf.pyx", "reproject.c"],
-                                     include_dirs=[numpy.get_include()])])    
+                                     include_dirs=[numpy.get_include()])],
+                          gdb_debug=True)    
 )
