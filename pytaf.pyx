@@ -150,6 +150,7 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
             lat, lon = np.meshgrid(ptarLon, ptarLat)
             latd = np.array(lat, dtype='float64')
             lond = np.array(lon, dtype='float64')
+            print("generating 2d lat/lon...")
             return resample(psouLat, psouLon,
                             latd, lond,
                             psouVal, r, True)
@@ -164,27 +165,42 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
              float r, s=False):
     # Get the shape of lat/lon [2].
     nx = ptarLat.shape[0]
+    print(nx)
     ny = ptarLat.shape[1]
+    print(ny)
     n_trg = nx * ny;
-    # trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
-    trg_data = np.zeros((nx,ny), dtype=psouVal.dtype)
-    index = np.arange(nx*ny, dtype=np.int32)
-    distance = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))
-    
+    print(n_trg)
     if s is True:
         print('using summary interpolation')
+        trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))        
+        n_src = psouLat.size;
+        print(n_src)
+        sx = psouLat.shape[0]
+        print(sx)
+        sy = psouLat.shape[1]
+        print(sy)
+        index = np.arange(n_src, dtype=np.int32)
+        distance = np.arange(n_src, dtype=np.float64).reshape((sy,sx))
         find_nn_block_index(ptarLat, ptarLon,
                             n_trg,
                             psouLat, psouLon,
                             index, distance,
-                            psouVal.size,
-                            r)        
-        tarSD = np.arange(n_trg, dtype=np.float64).reshape((nx,ny))
+                            n_src,
+                            r)
+        print('finished generating index.')
+        print(index)
+        tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
         nSouPixels = np.arange(n_trg, dtype=np.int32)
-        interpolate_summary(psouVal, index, psouVal.size,
+        interpolate_summary(psouVal, index, n_src,
                             trg_data, tarSD, nSouPixels, n_trg)
+        print(trg_data)
+        print('finished retrieving data with index.')
+        return trg_data
     else:
-        print('using nn interpolation')        
+        print('using nn interpolation')
+        trg_data = np.zeros((nx,ny), dtype=psouVal.dtype)        
+        index = np.arange(nx*ny, dtype=np.int32)
+        distance = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))        
         find_nn_block_index(psouLat, psouLon,
                             psouLat.size,
                             ptarLat, ptarLon,
@@ -192,7 +208,7 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
                             n_trg,
                             r)
         interpolate_nn(psouVal, trg_data, index, n_trg)
-    return trg_data
+        return trg_data
 # References
 #
 # [1] https://stackoverflow.com/questions/40413858/how-to-handle-double-pointer-in-c-wrapping-by-cython

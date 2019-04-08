@@ -9,7 +9,6 @@ f = np.arange(12, dtype=np.float64).reshape((3,4))
 # radius
 r = 5555
 
-
-print('Test nearest neighbor resample.')
+print('Test summary resample.')
 g = pytaf.resample_s(a, b, d, e, f, r)
 print(g)
