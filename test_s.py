@@ -9,6 +9,12 @@ f = np.arange(12, dtype=np.float64).reshape((3,4))
 # radius
 r = 5555
 
-print('Test summary resample.')
-g = pytaf.resample_s(a, b, d, e, f, r)
-print(g)
+# print('Test summary resample with no 2 additional arguments.')
+# g = pytaf.resample_s(a, b, d, e, f, r)
+# print(g)
+
+print('Test summary resample with 2 additional arguments.')
+h = np.arange(12, dtype=np.float64).reshape((3,4))
+i = np.arange(12, dtype=np.int32)
+j = pytaf.resample_s(a, b, d, e, f, r, h, i)
+print(j)

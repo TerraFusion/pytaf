@@ -9,6 +9,8 @@ The C functions from advancedFusion:
  * reproject.cpp/nnInterpolate
  ...
 
+Tested under: Python 3.6.6 :: Anaconda custom (64-bit)
+Last updated: 2019-04-08
 """
 import numpy as np
 cimport cython
@@ -143,7 +145,8 @@ def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
         return None
 
 # Wrapper for getting the target values using the nearest neighbor summary.
-def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
+def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
+               tarSD=None, nSouPixels=None):
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         if ptarLat.ndim == 1:
             # Generate 2d lat/lon.
@@ -162,7 +165,7 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
 
 # Wrapper for getting the target values.
 def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
-             float r, s=False):
+             r, s=False, tarSD=None, nSouPixels=None):
     # Get the shape of lat/lon [2].
     nx = ptarLat.shape[0]
     print(nx)
@@ -189,8 +192,14 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
                             r)
         print('finished generating index.')
         print(index)
-        tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
-        nSouPixels = np.arange(n_trg, dtype=np.int32)
+        if tarSD is None:
+            print('Target distance input is None.')
+            return None
+        if nSouPixels is None:
+            print('Source pixel input is None')
+            return None
+#        tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
+#        nSouPixels = np.arange(n_trg, dtype=np.int32)
         interpolate_summary(psouVal, index, n_src,
                             trg_data, tarSD, nSouPixels, n_trg)
         print(trg_data)
