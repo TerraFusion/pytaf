@@ -41,15 +41,25 @@ f.close()
 max_r = 5040
 
 # Find indexes of nearest neighbor point.
+
+# For some reason, passing 1-d generates memory error.
 # trg_data = pytaf.resample_s(modis_lat, modis_lon, 
 #                             x, y, modis_data, max_r)
 
 lat, lon = np.meshgrid(x, y)
 latd = np.array(lat, dtype='float64')
 lond = np.array(lon, dtype='float64')
+
+# Create dataset for index and distance.
+n_src = modis_lat.size;
+sx = modis_lat.shape[0]
+sy = modis_lat.shape[1]
+index = np.arange(n_src, dtype=np.int32)
+distance = np.arange(n_src, dtype=np.float64).reshape((sy,sx))
+
 trg_data = pytaf.resample(modis_lat, modis_lon,
                           latd, lond,
-                          modis_data, max_r, True)
+                          modis_data, max_r, True, distance, index)
         
 print('resample_s is done')
 print(trg_data)
