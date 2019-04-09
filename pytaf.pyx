@@ -146,7 +146,7 @@ def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
 
 # Wrapper for getting the target values using the nearest neighbor summary.
 def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
-               tarSD=None, nSouPixels=None):
+               tarSD, nSouPixels):
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         if ptarLat.ndim == 1:
             # Generate 2d lat/lon.
@@ -159,7 +159,7 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
                             psouVal, r, True)
         else:
             return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
-                            True)
+                             True, tarSD, nSouPixels)
     else:
         return None
 
