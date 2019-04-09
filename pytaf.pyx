@@ -150,7 +150,7 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         if ptarLat.ndim == 1:
             # Generate 2d lat/lon.
-            lat, lon = np.meshgrid(ptarLon, ptarLat)
+            lat, lon = np.meshgrid(ptarLat, ptarLon)
             latd = np.array(lat, dtype='float64')
             lond = np.array(lon, dtype='float64')
             print("generating 2d lat/lon...")
@@ -167,15 +167,16 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
 def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
              r, s=False, tarSD=None, nSouPixels=None):
     # Get the shape of lat/lon [2].
-    nx = ptarLat.shape[0]
+    nx = ptarLat.shape[1]
     print(nx)
-    ny = ptarLat.shape[1]
+    ny = ptarLat.shape[0]
     print(ny)
     n_trg = nx * ny;
     print(n_trg)
     if s is True:
         print('using summary interpolation')
-        trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))        
+        trg_data = np.zeros((ny,nx), dtype=psouVal.dtype)        
+        # trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))        
         n_src = psouLat.size;
         print(n_src)
         sx = psouLat.shape[0]
@@ -205,9 +206,9 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
         return trg_data
     else:
         print('using nn interpolation')
-        trg_data = np.zeros((nx,ny), dtype=psouVal.dtype)        
+        trg_data = np.zeros((ny,nx), dtype=psouVal.dtype)        
         index = np.arange(nx*ny, dtype=np.int32)
-        distance = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))        
+        distance = np.arange(nx*ny, dtype=np.float64).reshape((ny,nx))        
         find_nn_block_index(psouLat, psouLon,
                             psouLat.size,
                             ptarLat, ptarLon,

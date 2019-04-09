@@ -30,7 +30,6 @@ with h5py.File(file_name, 'r') as f:
     # Read MODIS Radiance dataset.
     modis_dset = f['/Target/Data_Fields/MODIS_Radiance']
     modis_data = modis_dset[0,:,:].astype(np.float64)
-    print(modis_data[0,0:10])
     # Read source lat/lon dataset.
     modis_ds_lat = f['/Geolocation/Latitude']
     modis_lat = modis_ds_lat[:,:].astype(np.float64)
@@ -42,13 +41,12 @@ max_r = 5040
 
 # Find indexes of nearest neighbor point.
 
-# For some reason, passing 1-d generates memory error.
-# trg_data = pytaf.resample_s(modis_lat, modis_lon, 
-#                             x, y, modis_data, max_r)
 
-lat, lon = np.meshgrid(x, y)
+lon, lat = np.meshgrid(x, y)
 latd = np.array(lat, dtype='float64')
 lond = np.array(lon, dtype='float64')
+lat_orig = latd.copy()
+lon_orig = lond.copy()
 
 # Create dataset for index and distance.
 n_src = modis_lat.size;
@@ -57,9 +55,12 @@ sy = modis_lat.shape[1]
 index = np.arange(n_src, dtype=np.int32)
 distance = np.arange(n_src, dtype=np.float64).reshape((sy,sx))
 
-trg_data = pytaf.resample(modis_lat, modis_lon,
-                          latd, lond,
-                          modis_data, max_r, True, distance, index)
+# For some reason, passing 1-d generates memory error.
+trg_data = pytaf.resample_s(modis_lat, modis_lon, 
+                            y, x, modis_data, max_r, distance, index)
+# trg_data = pytaf.resample(modis_lat, modis_lon,
+#                           latd, lond,
+#                          modis_data, max_r, True, distance, index)
         
 print('resample_s is done')
 print(trg_data)
@@ -67,8 +68,10 @@ print(trg_data)
 # Open file for writing.
 f2 = h5py.File('modis2ug.rs.h5', 'w')
 dset = f2.create_dataset('/UG_Radiance', data=trg_data)
-dset_lat = f2.create_dataset('/Latitude', data=y)
-dset_lon = f2.create_dataset('/Longitude', data=x)
+# dset_lat = f2.create_dataset('/Latitude', data=y)
+# dset_lon = f2.create_dataset('/Longitude', data=x)
+dset_lat = f2.create_dataset('/Latitude', data=lat_orig)
+dset_lon = f2.create_dataset('/Longitude', data=lon_orig)
 
 # TODO: Add CF attributes on dataset.
 f2.close()
