@@ -156,7 +156,7 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
             print("generating 2d lat/lon...")
             return resample(psouLat, psouLon,
                             latd, lond,
-                            psouVal, r, True)
+                            psouVal, r, True, tarSD, nSouPixels)
         else:
             return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
                              True, tarSD, nSouPixels)
@@ -198,8 +198,6 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
         if nSouPixels is None:
             print('Source pixel input is None')
             return None
-#        tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
-#        nSouPixels = np.arange(n_trg, dtype=np.int32)
         interpolate_summary(psouVal, index, n_src,
                             trg_data, tarSD, nSouPixels, n_trg)
         print(trg_data)
