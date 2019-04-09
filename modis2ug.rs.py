@@ -56,22 +56,21 @@ index = np.arange(n_src, dtype=np.int32)
 distance = np.arange(n_src, dtype=np.float64).reshape((sy,sx))
 
 # For some reason, passing 1-d generates memory error.
-trg_data = pytaf.resample_s(modis_lat, modis_lon, 
-                            y, x, modis_data, max_r, distance, index)
-# trg_data = pytaf.resample(modis_lat, modis_lon,
-#                           latd, lond,
-#                          modis_data, max_r, True, distance, index)
-        
+# trg_data = pytaf.resample_s(modis_lat, modis_lon, 
+#                             y, x, modis_data, max_r, distance, index)
+trg_data = pytaf.resample(modis_lat, modis_lon,
+                          latd, lond,
+                          modis_data, max_r, True, distance, index)
 print('resample_s is done')
 print(trg_data)
 
 # Open file for writing.
 f2 = h5py.File('modis2ug.rs.h5', 'w')
 dset = f2.create_dataset('/UG_Radiance', data=trg_data)
-# dset_lat = f2.create_dataset('/Latitude', data=y)
-# dset_lon = f2.create_dataset('/Longitude', data=x)
-dset_lat = f2.create_dataset('/Latitude', data=lat_orig)
-dset_lon = f2.create_dataset('/Longitude', data=lon_orig)
+dset_lat = f2.create_dataset('/Latitude', data=y)
+dset_lon = f2.create_dataset('/Longitude', data=x)
+# dset_lat = f2.create_dataset('/Latitude', data=lat_orig)
+# dset_lon = f2.create_dataset('/Longitude', data=lon_orig)
 
 # TODO: Add CF attributes on dataset.
 f2.close()
