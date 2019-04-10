@@ -35,12 +35,12 @@ See [misr2modis.py](misr2modis.py) for the work-in-progress code.
 
   python gen_img.py [-s] /group/path/to/hdf5/dset stride
 
-  -s: do not apply scale/offset.
+  -s: do not apply scale/offset. do not show color bar.
   stride: subsetting stride for large dataset.
 
   Example:
 
-  gen_img.py /Source/Data_Fields/MISR_Radiance 100
+  python gen_img.py -s /Source/Data_Fields/MISR_Radiance 100
 
   The above command will generate images by subsetting every 100th data point.
   
