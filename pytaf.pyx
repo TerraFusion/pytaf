@@ -199,13 +199,13 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
         if nSouPixels is None:
             print('Source pixel input is None')
             return None
-        nSs = np.arange(n_trg, dtype=np.int32).reshape((ny,nx))        
-        tSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))        
+#        nSs = np.arange(n_trg, dtype=np.int32).reshape((ny,nx))        
+#        tSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))        
 
-        interpolate_summary(psouVal, index, n_src,
-                            trg_data, tSD, nSs, n_trg)        
 #        interpolate_summary(psouVal, index, n_src,
-#                            trg_data, tarSD, nSouPixels, n_trg)
+#                            trg_data, tSD, nSs, n_trg)        
+        interpolate_summary(psouVal, index, n_src,
+                            trg_data, tarSD, nSouPixels, n_trg)
         print(trg_data)
         print('finished retrieving data with index.')
         return trg_data
