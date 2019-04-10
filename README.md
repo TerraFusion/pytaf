@@ -25,6 +25,26 @@ See [modis2ug.py](modis2ug.py) for the complete code.
 
 See [misr2modis.py](misr2modis.py) for the work-in-progress code.
 
+## Browse image generation tool
+
+  This script loops through AF files in the current working directory and
+  generates images. For dataset that has more than 2D, it will be subsetted.
+  The index values in higher diemensions will be used as output file name. 
+
+  Usage:
+
+  python gen_img.py [-s] /group/path/to/hdf5/dset stride
+
+  -s: do not apply scale/offset.
+  stride: subsetting stride for large dataset.
+
+  Example:
+
+  gen_img.py /Source/Data_Fields/MISR_Radiance 100
+
+  The above command will generate images by subsetting every 100th data point.
+  
+  
 ##  TO-DO
 * Unit tests
 * Packaging for pip/conda install
