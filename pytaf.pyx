@@ -235,7 +235,6 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
         if nSouPixels is None:
             print('Source pixel input is None')
             return None
-
         interpolate_summary(psouVal, index, n_src,
                             trg_data, tarSD, nSouPixels, n_trg)
         print('finished retrieving data with index.')        
