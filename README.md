@@ -33,10 +33,12 @@ See [misr2modis.py](misr2modis.py) for the work-in-progress code.
 
   Usage:
 
-  python gen_img.py [-s] /group/path/to/hdf5/dset stride
+  python gen_img.py [-s] [-z] /group/path/to/hdf5/dset stride
 
   -s: do not apply scale/offset. do not show color bar.
   stride: subsetting stride for large dataset.
+  
+  -z: zoom image by limiting map to lat/lon boundary
 
   Example:
 

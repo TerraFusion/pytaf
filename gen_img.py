@@ -11,6 +11,7 @@ def print_args(a):
     print(a.dset)
     print(a.S)
     print(a.scale)
+    print(a.zoom)
     
 def count_images(d):
     n = 1
@@ -44,7 +45,7 @@ def get_attrs(d):
 def plot_image(data, lat, lon,
                file_name, n, step=1, scale=False,
                valid_min=None, valid_max=None,
-               scale_factor=1.0, add_offset=0.0):
+               scale_factor=1.0, add_offset=0.0, zoom=False):
     plt.close('all')
     if scale:
          invalid = np.logical_or(data > valid_max,
@@ -53,13 +54,28 @@ def plot_image(data, lat, lon,
          data = scale_factor * data + add_offset
     data[data == -999] = np.nan    
     datam = np.ma.masked_array(data, np.isnan(data))
-         
-    m = Basemap(projection='cyl', resolution='l',
-                llcrnrlat=-90, urcrnrlat = 90,
-                llcrnrlon=-180, urcrnrlon = 180)
+    if zoom:
+        m = Basemap(projection='cyl', resolution='l',
+                    llcrnrlat=np.min(lat), urcrnrlat=np.max(lat),
+                    llcrnrlon=np.min(lon), urcrnrlon=np.max(lon))
+        slat = (np.ceil(np.max(lat)) -  np.floor(np.min(lat))) / 6.0
+        slon = (np.ceil(np.max(lon)) -  np.floor(np.min(lon))) / 6.0        
+                                  
+        m.drawparallels(np.arange(np.floor(np.min(lat)),
+                                  np.ceil(np.max(lat)), slat),
+                        labels=[1, 0, 0, 0])
+        m.drawmeridians(np.arange(np.floor(np.min(lon)),
+                                  np.ceil(np.max(lon)), slon),
+                        labels=[0, 0, 0, 1])
+
+    else:
+        m = Basemap(projection='cyl', resolution='l',
+                    llcrnrlat=-90, urcrnrlat = 90,
+                    llcrnrlon=-180, urcrnrlon = 180)
+        m.drawparallels(np.arange(-90., 120., 30.), labels=[1, 0, 0, 0])
+        m.drawmeridians(np.arange(-180, 180., 45.), labels=[0, 0, 0, 1])
+        
     m.drawcoastlines(linewidth=0.5)
-    m.drawparallels(np.arange(-90., 120., 30.), labels=[1, 0, 0, 0])
-    m.drawmeridians(np.arange(-180, 180., 45.), labels=[0, 0, 0, 1])
     m.scatter(lon[::step, ::step],
               lat[::step, ::step],
               c=datam[::step, ::step], s=1,
@@ -77,6 +93,8 @@ parser.add_argument('dset', type=str,
                     help='HDF5 dataset name with group path')
 parser.add_argument('S', type=int, help='an integer for subsetting step')
 parser.add_argument('-s', '--scale', action='store_false',
+                    help='turn off applying scale/offset')
+parser.add_argument('-z', '--zoom', action='store_true',
                     help='turn off applying scale/offset')
 args = parser.parse_args()
 # print_args(args)
@@ -104,9 +122,9 @@ for filename in glob.glob('*.h5'):
                     # print(i)
                     plot_image(datas[i,:,:], lat, lon,
                                filename, i, args.S, args.scale,
-                               mn, mx, sf, ao)
+                               mn, mx, sf, ao, args.zoom)
             else:
                 data = dset[:]
                 plot_image(data, lat, lon,
                            filename, 0, args.S, args.scale,
-                           mn, mx, sf, ao)
+                           mn, mx, sf, ao, args.zoom)
