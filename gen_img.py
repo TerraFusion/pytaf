@@ -20,10 +20,40 @@ def count_images(d):
     # print(n)
     return n
 
-def plot_image(data, lat, lon, file_name, n, step=1, scale=False):
+def get_attrs(d):
+    valid_min=None
+    valid_max=None
+    scale_factor=1.0
+    add_offset=0.0
+    a = d.attrs
+    if 'valid_max' in a.keys():
+        valid_max = dset.attrs['valid_max']
+        print(type(valid_max))
+        print('valid_max='+str(valid_max))
+    if 'valid_min' in a.keys():    
+        valid_min = dset.attrs['valid_min']
+        print('valid_min='+str(valid_min))        
+    if 'scale_factor' in a.keys():
+        scale_factor = dset.attrs['scale_factor']
+        print('scale_factor='+str(scale_factor))
+    if 'add_offset' in a.keys():
+        add_offset = dset.attrs['add_offset']
+        print('add_offset='+str(add_offset))
+    return valid_min, valid_max, scale_factor, add_offset
+    
+def plot_image(data, lat, lon,
+               file_name, n, step=1, scale=False,
+               valid_min=None, valid_max=None,
+               scale_factor=1.0, add_offset=0.0):
     plt.close('all')
-    data[data == -999] = np.nan
+    if scale:
+         invalid = np.logical_or(data > valid_max,
+                                 data < valid_min)
+         data[invalid] = np.nan
+         data = scale_factor * data + add_offset
+    data[data == -999] = np.nan    
     datam = np.ma.masked_array(data, np.isnan(data))
+         
     m = Basemap(projection='cyl', resolution='l',
                 llcrnrlat=-90, urcrnrlat = 90,
                 llcrnrlon=-180, urcrnrlon = 180)
@@ -60,20 +90,23 @@ for filename in glob.glob('*.h5'):
             lon = f['/Geolocation/Longitude']
             print('Found '+args.dset+' in '+filename)
             print('No. of dimensions = ' + str(dset.ndim))
+            mn, mx, sf, ao = get_attrs(dset)            
             if(dset.ndim > 2):
                 n = count_images(dset)
                 x = dset.shape[dset.ndim - 1]
-                print(x)
                 y = dset.shape[dset.ndim - 2]
-                print(y)
                 data = dset[:]
                 datas = data.reshape(n, y, x)
+                print('Data has been reshaped:')
                 print(datas.shape)
+
                 for i in range(0, n):
-                    print(i)
+                    # print(i)
                     plot_image(datas[i,:,:], lat, lon,
-                               filename, i, args.S, args.scale)
+                               filename, i, args.S, args.scale,
+                               mn, mx, sf, ao)
             else:
                 data = dset[:]
                 plot_image(data, lat, lon,
-                           filename, 0, args.S, args.scale)
+                           filename, 0, args.S, args.scale,
+                           mn, mx, sf, ao)
