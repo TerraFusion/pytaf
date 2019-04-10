@@ -14,7 +14,6 @@ Last updated: 2019-04-05
 import h5py
 import pytaf
 import numpy as np
-import gdal
 
 # Open AF file.
 file_name = 'misr_on_modis_SrcLowAnAfBlueGreen_Trg1KM8_9_69365.h5'
@@ -54,8 +53,8 @@ n_trg = nx * ny;
 print(n_trg)
 
 # Find indexes of nearest neighbor point.
-trg_data = pytaf.resample_n(modis_lat, modis_lon, 
-                            x, y, modis_data, max_r)
+trg_data = pytaf.resample_n_g(modis_lat, modis_lon, 
+                              x, y, modis_data, max_r)
 print(trg_data)
 print('Finished retrieving data with index.')
 

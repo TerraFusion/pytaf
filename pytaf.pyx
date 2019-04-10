@@ -103,19 +103,19 @@ def interpolate_summary(np.ndarray[double, ndim=2, mode="c"] souVal not None,
                        &tarVal[0,0], &tarSD[0,0], &nSouPixels[0,0], nTar)
     return None
 
-# Check dimensions.
+# Check dimensions if src/trg lat/lon dimensions are 1 or 2.
 def check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
     # Return error if dimension size is not 2.
-    if psouLat.ndim != 2:
-        print('No. of source latitude dimensions should be 2.')
+    if psouLat.ndim < 1 or psouLat.ndim > 2:
+        print('No. of source latitude dimensions should be 1 or 2.')
         return False
-    if psouLon.ndim != 2:
-        print('No. of source longitude dimensions should be 2.')
+    if psouLat.ndim < 1 or psouLon.ndim > 2:
+        print('No. of source longitude dimensions should be 1 or 2.')
         return False
-    if ptarLat.ndim < 1 and ptarLat.ndim > 2:
+    if ptarLat.ndim < 1 or ptarLat.ndim > 2:
         print('No. of target latitude dimensions should be 1 or 2.')
         return False
-    if ptarLon.ndim < 1 and ptarLon.ndim > 2:
+    if ptarLon.ndim < 1 or ptarLon.ndim > 2:
         print('No. of target longitude dimensions should be 1 or 2.')
         return False
     if ptarLat.ndim != ptarLon.ndim:
@@ -123,13 +123,31 @@ def check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         print('Lat dim = '+str(ptarLat.ndim))
         print('Lon dim = '+str(ptarLon.ndim))        
         return False
-    if psouVal.ndim != 2:
-        print('No. of source value dimensions should be 2.')
-        return False
+    if psouLat.ndim != psouLon.ndim:
+        print('Source lat/lon dimension sizes do not match.')
+        print('Lat dim = '+str(psouLat.ndim))
+        print('Lon dim = '+str(psouLon.ndim))        
+        return False    
     return True
 
-
+# Wrapper for any projection using nn interpolation.
 def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
+    if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
+        if psouLat.ndim == 1:
+            # Generate 2d lat/lon.
+            print("generating 2d lat/lon...")            
+            latd = psouLat.reshape(psouLat.size, 1)
+            lond = psouLon.reshape(psouLon.size, 1)
+            return resample(latd, lond,
+                            ptarLat, ptarLon,
+                            psouVal, r)
+        else:
+            return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r)
+    else:
+        return None
+    
+# Wrapper for geographic projection using nn interpolation.
+def resample_n_g(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         if ptarLat.ndim == 1:
             # Generate 2d lat/lon.
@@ -143,10 +161,29 @@ def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
             return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r)
     else:
         return None
-
-# Wrapper for getting the target values using the nearest neighbor summary.
+    
+# Wrapper for any projection using summary interpolation.
 def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
                tarSD, nSouPixels):
+    if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
+        if psouLat.ndim == 1:
+            # Generate 2d lat/lon.
+            print("generating 2d lat/lon...")
+            latd = psouLat.reshape(psouLat.size, 1)
+            lond = psouLon.reshape(psouLon.size, 1)
+            
+            return resample(latd, lond,
+                            ptarLat, ptarLon,
+                            psouVal, r, True, tarSD, nSouPixels)
+        else:
+            return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
+                             True, tarSD, nSouPixels)
+    else:
+        return None
+    
+# Wrapper for geographic projection using summary interpolation.
+def resample_s_g(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
+                 tarSD, nSouPixels):
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         if ptarLat.ndim == 1:
             # Generate 2d lat/lon.
@@ -176,7 +213,6 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
     if s is True:
         print('using summary interpolation')
         trg_data = np.zeros((ny,nx), dtype=psouVal.dtype)        
-        # trg_data = np.arange(nx*ny, dtype=np.float64).reshape((nx,ny))        
         n_src = psouLat.size;
         print(n_src)
         sx = psouLat.shape[0]
@@ -199,15 +235,10 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
         if nSouPixels is None:
             print('Source pixel input is None')
             return None
-        nSs = np.arange(n_trg, dtype=np.int32).reshape((ny,nx))        
-        tSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))        
-
         interpolate_summary(psouVal, index, n_src,
-                            trg_data, tSD, nSs, n_trg)        
-#        interpolate_summary(psouVal, index, n_src,
-#                            trg_data, tarSD, nSouPixels, n_trg)
+                            trg_data, tarSD, nSouPixels, n_trg)
+        print('finished retrieving data with index.')        
         print(trg_data)
-        print('finished retrieving data with index.')
         return trg_data
     else:
         print('using nn interpolation')

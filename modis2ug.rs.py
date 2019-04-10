@@ -14,7 +14,6 @@ Last updated: 2019-04-05
 import h5py
 import pytaf
 import numpy as np
-import gdal
 
 # Open AF file.
 file_name = 'misr_on_modis_SrcLowAnAfBlueGreen_Trg1KM8_9_69365.h5'
