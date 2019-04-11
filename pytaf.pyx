@@ -10,7 +10,7 @@ The C functions from advancedFusion:
  ...
 
 Tested under: Python 3.6.6 :: Anaconda custom (64-bit)
-Last updated: 2019-04-08
+Last updated: 2019-04-11
 """
 import numpy as np
 cimport cython
@@ -135,12 +135,14 @@ def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         if psouLat.ndim == 1:
             # Generate 2d lat/lon.
-            print("generating 2d lat/lon...")            
+            print("generating 2d lat/lon/src values...")            
             latd = psouLat.reshape(psouLat.size, 1)
             lond = psouLon.reshape(psouLon.size, 1)
-            return resample(latd, lond,
-                            ptarLat, ptarLon,
-                            psouVal, r)
+            soud = psouLon.reshape(psouVal.size, 1)
+            trg = resample(latd, lond,
+                           ptarLat, ptarLon,
+                           soud, r)
+            return trg.ravel()
         else:
             return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r)
     else:
@@ -205,11 +207,11 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
              r, s=False, tarSD=None, nSouPixels=None):
     # Get the shape of lat/lon [2].
     nx = ptarLat.shape[1]
-    print(nx)
+    # print(nx)
     ny = ptarLat.shape[0]
-    print(ny)
+    # print(ny)
     n_trg = nx * ny;
-    print(n_trg)
+    # print(n_trg)
     if s is True:
         print('using summary interpolation')
         trg_data = np.zeros((ny,nx), dtype=psouVal.dtype)        
