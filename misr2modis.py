@@ -1,36 +1,49 @@
+"""
+This is a demo program that pytaf output matches AF tool output
+using two data files that are created by AF tool.
+
+Tested under: Python 3.6.6 :: Anaconda custom (64-bit)
+Last updated: 2019-04-11
+"""
 import h5py
 import pytaf
 import numpy as np
 
 # Open BF file.
-file_name = '/Users/hyoklee/Downloads/TERRA_BF_L1B_O69626_20130119123228_F000_V000.h5'
+file_name = 'modis_on_misr_Src1KMAll_TrgLowAll_63290.h5'
+file_name2 = 'misr_on_modis_SrcLowAll_Trg1KMAll_63290.h5'
+
 with h5py.File(file_name, 'r') as f:
-    # TODO: Read destination geo-location datasets.
-    
-    # Read MISR / AN / Blue_Radiance dataset.
-    misr_dset = f['/MISR/AN/Data_Fields/Blue_Radiance']
-    misr_data = misr_dset[0,:,:].astype(np.float64)
+    # Read MISR from Target as source.
+    misr_dset = f['/Target/Data_Fields/MISR_Radiance']
+    misr_data = misr_dset[0,0,:,:].astype(np.float64)
 
-    # How does AF collect all MODIS dataset and merge?
-    # TODO: Do something like get_modis_rads() in io.cpp.
-    
-    # Read MODIS 1km band 8 dataset.
-    modis_dset = f['/MODIS/granule_2013019_1310/_1KM/Data_Fields/EV_1KM_RefSB']
-    modis_data = modis_dset[0,:,:].astype(np.float64)
+    # Read source lat/lon. Shape: {23040, 2092}
+    ds_lat = f['/Geolocation/Latitude']
+    slat = ds_lat[:,:].astype(np.float64)
+    ds_lon = f['/Geolocation/Longitude']
+    slon = ds_lon[:,:].astype(np.float64)    
+f.close()
 
-c = np.arange(3, dtype=np.int32)
-print(modis_data[0,0:10])
-print(misr_data[0,0:10])
+with h5py.File(file_name2, 'r') as f2:
+    # Read target lat/lon. {40620, 1354}
+    ds_tlat = f2['/Geolocation/Latitude']
+    tlat = ds_tlat[:,:].astype(np.float64)
+    ds_tlon = f2['/Geolocation/Longitude']
+    tlon = ds_tlon[:,:].astype(np.float64)        
+    ds_tmisr = f2['/Source/Data_Fields/MISR_Radiance']
+    tmisr = ds_tmisr[0,0,:,:].astype(np.float64)
+f2.close()
+lat_orig = tlat.copy()
+lon_orig = tlon.copy()
 
-# TODO: On what dataset interpolate should be called?
-# Do some processing in io.cpp, af_run.cpp, and AF_output_MODIS/MISR.cpp.
-pytaf.interpolate_nn(modis_data, misr_data, c, 3)
-print(misr_data[0,0:10])
+trg_data = pytaf.resample_n(slat, slon, tlat, tlon, misr_data, 5556)
+print(trg_data[0,0:10])
 
 # Open file for writing.
-f2 = h5py.File('misr_on_modis.h5', 'w')
-dset = f2.create_dataset('/Target/Data_Fields/MISR_Radiance', data=misr_data)
-dset2 = f2.create_dataset('/Source/Data_Fields/MODIS_Radiance', data=modis_data)
-
-# TODO: Add CF attributes on dataset.
-f2.close()
+f3 = h5py.File('misr2modis.h5', 'w')
+dset = f3.create_dataset('/Target/Data_Fields/MISR_Radiance', data=trg_data)
+dset2 = f3.create_dataset('/Source/Data_Fields/MISR_Radiance', data=tmisr)
+dset3 = f3.create_dataset('/Geolocation/Latitude', data=lat_orig)
+dset4 = f3.create_dataset('/Geolocation/Longitude', data=lon_orig)
+f3.close()

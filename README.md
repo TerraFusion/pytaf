@@ -23,8 +23,14 @@ See [modis2ug.py](modis2ug.py) for the complete code.
 
 ## MISR to MODIS
 
-See [misr2modis.py](misr2modis.py) for the work-in-progress code.
+See [misr2modis.py](misr2modis.py) for the verification of pytaf against
+AF tool outputs.
 
+You can compare the results using the two plots:
+
+[AF Tool generated output](misr2modis.h5.py.s.png)
+
+[pytaf generated output](misr2modis.h5.py.t.png)
 ## Browse image generation tool
 
   This script loops through AF files in the current working directory and
@@ -50,9 +56,9 @@ See [misr2modis.py](misr2modis.py) for the work-in-progress code.
 ##  TO-DO
 * Unit tests
 * Packaging for pip/conda install
-* More conversion examples
+* More conversion examples (e.g., CERES to MISR)
 
 ## Limitation
 
 The pytaf.find_nn_block_index() function modifies target lat/lon values.
-
+Thus, you need to make copies before you call resample_n() function.
