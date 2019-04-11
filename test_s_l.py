@@ -19,7 +19,7 @@ pytaf.find_nn_block_index(slat, slon, sdata.size, tlat, tlon,
 tdata = np.zeros((3,4), dtype=sdata.dtype)
 print(tdata)
 tsd = np.zeros((3,4), dtype=sdata.dtype)
-nsp = np.arange((3,4), dtype=np.int32)
+nsp = np.arange(12, dtype=np.int32).reshape((3,4))
 pytaf.interpolate_summary(sdata, index, sdata.size,
                           tdata, tsd, nsp, tdata.size)
 print(tdata)
