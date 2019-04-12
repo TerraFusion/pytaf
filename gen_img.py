@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import string
 import argparse
 import glob
 import h5py
@@ -6,6 +7,12 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.basemap import Basemap
+
+def get_base_name(s):
+    s_lpos = s.rfind("/")
+    if s_lpos != -1:
+        s=s[s_lpos+1:]
+    return s
 
 def print_args(a):
     print(a.dset)
@@ -43,7 +50,7 @@ def get_attrs(d):
     return valid_min, valid_max, scale_factor, add_offset
     
 def plot_image(data, lat, lon,
-               file_name, n, step=1, scale=False,
+               file_name, dset_name,n, step=1, scale=False,
                valid_min=None, valid_max=None,
                scale_factor=1.0, add_offset=0.0, zoom=False):
     plt.close('all')
@@ -83,8 +90,8 @@ def plot_image(data, lat, lon,
     if scale: 
         plt.colorbar()
     fig = plt.gcf()
-    fig.suptitle('{0}.{1}'.format(file_name, n))
-    pngfile = file_name+'.'+str(n)+'.py.png'
+    fig.suptitle('{0}.{1}.{2}'.format(file_name, dset_name,n))
+    pngfile = file_name+'.'+dset_name+'.'+str(n)+'.py.png'
     fig.savefig(pngfile)
     
 parser = argparse.ArgumentParser(
@@ -95,7 +102,7 @@ parser.add_argument('S', type=int, help='an integer for subsetting step')
 parser.add_argument('-s', '--scale', action='store_false',
                     help='turn off applying scale/offset')
 parser.add_argument('-z', '--zoom', action='store_true',
-                    help='turn off applying scale/offset')
+                    help='turn off applying zoom')
 args = parser.parse_args()
 # print_args(args)
 
@@ -104,6 +111,7 @@ for filename in glob.glob('*.h5'):
     with h5py.File(filename, 'r') as f:
         if args.dset in f.keys():
             dset = f[args.dset]
+            dset_name = get_base_name(args.dset)
             lat = f['/Geolocation/Latitude']
             lon = f['/Geolocation/Longitude']
             print('Found '+args.dset+' in '+filename)
@@ -121,7 +129,7 @@ for filename in glob.glob('*.h5'):
                 for i in range(0, n):
                     # print(i)
                     plot_image(datas[i,:,:], lat, lon,
-                               filename, i, args.S, args.scale,
+                               filename, dset_name,i, args.S, args.scale,
                                mn, mx, sf, ao, args.zoom)
             else:
                 data = dset[:]
