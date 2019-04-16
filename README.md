@@ -6,6 +6,10 @@ Python interface for Terra Advanced Fusion
 
 See [example.py](example.py) for usage.
 
+## Installation
+
+Use `$pip -r requirements.txt`.
+
 ## MODIS to User-defined grid
 
 Here is the workflow. The [AFtool.cpp](https://github.com/TerraFusion/advancedFusion/blob/master/src/AFtool.cpp) is the reference model.
