@@ -14,7 +14,6 @@ Last updated: 2019-04-03
 import h5py
 import pytaf
 import numpy as np
-import gdal
 
 # Open AF file.
 file_name = 'misr_on_modis_SrcLowAnAfBlueGreen_Trg1KM8_9_69365.h5'
@@ -67,8 +66,8 @@ n_src = modis_lat.size;
 sx = modis_lat.shape[0]
 sy = modis_lat.shape[1]
 
-index = np.arange(n_src, dtype=np.int32)
-distance = np.arange(n_src, dtype=np.float64).reshape((sy,sx))
+i = np.arange(n_src, dtype=np.int32)
+d = np.arange(n_src, dtype=np.float64).reshape((sy,sx))
 
 
 
@@ -78,22 +77,12 @@ print(n_trg)
 
 lat_orig = lat.copy()
 lon_orig = lon.copy()
-
-# Find indexes of nearest neighbor point.
-# pytaf.find_nn_block_index(modis_lat, modis_lon,
-#                           n_src,
-#                           lat, lon,
-#                           index, distance,
+# pytaf.find_nn_block_index(lat_orig, lon_orig,
 #                           n_trg,
+#                           modis_lat, modis_lon,
+#                           i, d,
+#                           n_src,
 #                           max_r)
-
-pytaf.find_nn_block_index(lat, lon,
-                          n_trg,
-                          modis_lat, modis_lon,
-                          index, distance,
-                          n_src,
-#                          max_r)
-                          size)
 
 # The above function modifies lat and lon values. Bug?
 print(lat[ny-1,nx-1])
@@ -104,11 +93,11 @@ print('Finished generating index.')
 # In the summaryInterpolate, tarSD and nSouPixels are also output parameters.
 trg_data = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
 tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
-nSouPixels = np.arange(n_trg, dtype=np.int32)
+nSouPixels = np.arange(n_trg, dtype=np.int32).reshape((ny,nx))
 
-pytaf.interpolate_summary(modis_data, index, n_src,
-                          trg_data, tarSD, nSouPixels, n_trg)
-print(trg_data)
+#  pytaf.interpolate_summary(modis_data, i, n_src,
+#                           trg_data, tarSD, nSouPixels, n_trg)
+# print(trg_data)
 print('Finished retrieving data with index.')
 
 # Open file for writing.

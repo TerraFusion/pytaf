@@ -47,7 +47,7 @@ m.drawcoastlines(linewidth=0.5)
 m.drawparallels(np.arange(-90., 120., 30.), labels=[1, 0, 0, 0])
 m.drawmeridians(np.arange(-180, 180., 45.), labels=[0, 0, 0, 1])
 
-m.pcolormesh(modis_lon, modis_lat,  datam , latlon=True, cmap='jet')
+m.pcolormesh(modis_lon, modis_lat,  datam.T , latlon=True, cmap='jet')
 # This is for 2d dataset.
 # m.scatter(modis_lon, modis_lat, c=datam, s=1,
 #           edgecolors=None, linewidth=0)
