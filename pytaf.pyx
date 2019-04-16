@@ -148,7 +148,7 @@ def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
             print("generating 2d source lat/lon/src values...")            
             slat = psouLat.reshape(psouLat.size, 1)
             slon = psouLon.reshape(psouLon.size, 1)
-            sval= psouLon.reshape(psouVal.size, 1)
+            sval = psouVal.reshape(psouVal.size, 1)
         # If target is 1d lat/lon, return value is also 1d.            
         if ptarLat.ndim == 1:
             print("generating 2d target lat/lon values...")            
@@ -181,18 +181,30 @@ def resample_n_g(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
 def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
                tarSD, nSouPixels):
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
+        # Default - all 2d
+        slon = psouLon
+        slat = psouLat
+        tlon = ptarLon
+        tlat = ptarLat
+        sval = psouVal
+
         if psouLat.ndim == 1:
             # Generate 2d lat/lon.
-            print("generating 2d lat/lon...")
-            latd = psouLat.reshape(psouLat.size, 1)
-            lond = psouLon.reshape(psouLon.size, 1)
-            
-            return resample(latd, lond,
-                            ptarLat, ptarLon,
-                            psouVal, r, True, tarSD, nSouPixels)
+            print("generating 2d source lat/lon/src values...")
+            slat = psouLat.reshape(psouLat.size, 1)
+            slon = psouLon.reshape(psouLon.size, 1)
+            sval = psouLon.reshape(psouVal.size, 1)
+        # If target is 1d lat/lon, return value is also 1d.            
+        if ptarLat.ndim == 1:
+            print("generating 2d target lat/lon values...")            
+            tlat = ptarLat.reshape(ptarLat.size, 1)
+            tlon = ptarLon.reshape(ptarLon.size, 1)
+            trg = resample(slat, slon, tlat, tlon, sval, r,
+                            True, tarSD, nSouPixels)
+            return trg.ravel()
         else:
-            return resample(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
-                             True, tarSD, nSouPixels)
+            return resample(slat, slon, tlat, tlon, sval, r,
+                            True, tarSD, nSouPixels)
     else:
         return None
     
