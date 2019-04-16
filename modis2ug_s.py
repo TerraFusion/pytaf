@@ -69,20 +69,18 @@ sy = modis_lat.shape[1]
 i = np.arange(n_src, dtype=np.int32)
 d = np.arange(n_src, dtype=np.float64).reshape((sy,sx))
 
-
-
 print(n_src)
 n_trg = nx * ny;
 print(n_trg)
 
 lat_orig = lat.copy()
 lon_orig = lon.copy()
-# pytaf.find_nn_block_index(lat_orig, lon_orig,
-#                           n_trg,
-#                           modis_lat, modis_lon,
-#                           i, d,
-#                           n_src,
-#                           max_r)
+pytaf.find_nn_block_index(lat_orig, lon_orig,
+                          n_trg,
+                          modis_lat, modis_lon,
+                          i, d,
+                          n_src,
+                          size)
 
 # The above function modifies lat and lon values. Bug?
 print(lat[ny-1,nx-1])
@@ -95,9 +93,9 @@ trg_data = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
 tarSD = np.arange(n_trg, dtype=np.float64).reshape((ny,nx))
 nSouPixels = np.arange(n_trg, dtype=np.int32).reshape((ny,nx))
 
-#  pytaf.interpolate_summary(modis_data, i, n_src,
-#                           trg_data, tarSD, nSouPixels, n_trg)
-# print(trg_data)
+pytaf.interpolate_summary(modis_data, i, n_src,
+                          trg_data, tarSD, nSouPixels, n_trg)
+print(trg_data)
 print('Finished retrieving data with index.')
 
 # Open file for writing.
