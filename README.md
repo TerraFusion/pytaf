@@ -35,6 +35,16 @@ You can compare the results using the two plots:
 [AF Tool generated output](misr2modis.h5.py.s.png)
 
 [pytaf generated output](misr2modis.h5.py.t.png)
+
+## MISR to CERES
+
+See [misr2ceres.py](misr2ceres.py) to test 1-d target lat/lon handling.
+
+You can check the outputplot.
+
+[pytaf generated output](misr2ceres.h5.py.png)
+
+
 ## Browse image generation tool
 
   This script loops through AF files in the current working directory and
