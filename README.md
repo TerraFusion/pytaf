@@ -40,10 +40,13 @@ You can compare the results using the two plots:
 
 See [misr2ceres.py](misr2ceres.py) to test 1-d target lat/lon handling.
 
-You can check the outputplot.
+You can check the MISR output plot.
 
-[pytaf generated output](misr2ceres.h5.py.png)
+[pytaf generated output of AN Red Radiance](misr2ceres.h5.py.png)
 
+You can compare the above plot with CERES data plot from BF file.
+
+[BF plot for Solar Zenith Angle](TERRA_BF_L1B_O53557_20100112014327_F000_V001.h5.py.png)
 
 ## Browse image generation tool
 
