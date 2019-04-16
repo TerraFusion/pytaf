@@ -43,7 +43,21 @@ src_lon = np.vstack(lon).astype(np.float64)
 sd = np.zeros(src_var.shape, dtype=src_var.dtype)
 npix = np.zeros(src_var.shape, dtype=np.int32)
 
+# Make copies of target lat/lon because resample will modify them.
+tlat = target_lat.copy()
+tlon = target_lon.copy()
 trg_data = pytaf.resample_s(src_lat, src_lon, target_lat, target_lon, 
                             src_var, max_radius, sd, npix)
+
+print(trg_data.shape)
+print(trg_data.size)
 print(trg_data)
+
+# Write data for plotting.
+f3 = h5py.File('misr2ceres.h5', 'w')
+dset = f3.create_dataset('/Target/Data_Fields/MISR_AN_Red_Radiance', data=trg_data)
+dset3 = f3.create_dataset('/Geolocation/Latitude', data=tlat)
+dset4 = f3.create_dataset('/Geolocation/Longitude', data=tlon)
+f3.close()
+
 print("--- %s seconds ---" % (time.time() - start_time))
