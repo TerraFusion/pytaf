@@ -8,7 +8,7 @@ See [example.py](example.py) for usage.
 
 ## Installation
 
-Use `$pip -r requirements.txt` to install required packages.
+Use `$pip install -r requirements.txt` to install required packages.
 Then, run `$python setup.py install`.
 
 ## Test

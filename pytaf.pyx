@@ -3,11 +3,11 @@ pytaf.pyx
 
 simple cython test of accessing advancedFusion functions
 
-The C functions from advancedFusion:
+The C functions are from advancedFusion:
 
- * reproject.cpp/clipping 
- * reproject.cpp/nnInterpolate
- ...
+ * reproject.c/clipping 
+ * reproject.c/nnInterpolate
+ * ... etc.
 
 Tested under: Python 3.6.6 :: Anaconda custom (64-bit)
 Last updated: 2019-04-16
