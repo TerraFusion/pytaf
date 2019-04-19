@@ -8,7 +8,12 @@ See [example.py](example.py) for usage.
 
 ## Installation
 
-Use `$pip -r requirements.txt`.
+Use `$pip -r requirements.txt` to install required packages.
+Then, run `$python setup.py install`.
+
+## Test
+
+Use `$python setup.py test` or `$nosetests`.
 
 ## MODIS to User-defined grid
 
@@ -69,6 +74,8 @@ You can compare the above plot with CERES data plot from BF file.
 
   The above command will generate images by subsetting every 100th data point.
   
+
+
   
 ##  TO-DO
 * Unit tests
