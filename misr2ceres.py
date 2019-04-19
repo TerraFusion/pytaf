@@ -22,7 +22,7 @@ with h5py.File(bf_file) as h5f:
         
 # Apply criteria.
 idx = np.where((sza>=0)&(sza<=89)&(vza>=0)&(vza<=25))[0]
-print idx.shape
+print(idx.shape)
 target_lat = lat[idx]
 target_lon = lon[idx]
 
