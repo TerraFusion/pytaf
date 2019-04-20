@@ -15,9 +15,9 @@ python:
   - 3.4
   - 3.5
   - 3.6
-  - 3.7
-    dist: xenial
-    sudo: true
+#  - 3.7
+#    dist: xenial
+#    sudo: true
 # Install the codecov pip dependency
 install:
   - pip install -r requirements.txt
