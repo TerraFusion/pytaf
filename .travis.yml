@@ -40,4 +40,5 @@ install:
 
 # Run the unit test
 script:
-  - nosetests -v --with-coverage --cover-tests --cover-package=tests
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then nosetests -v --with-coverage --cover-tests --cover-package=tests; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then python setup.py test; fi
