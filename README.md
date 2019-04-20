@@ -63,16 +63,17 @@ You can compare the above plot with CERES data plot from BF file.
 
   Usage:
 
-  python gen_img.py [-s] [-z] /group/path/to/hdf5/dset stride
+  `$python gen_img.py [-s] [-z] /hdf5/group/path/to/dset stride`
 
   -s: do not apply scale/offset. do not show color bar.
+  
   stride: subsetting stride for large dataset.
   
   -z: zoom image by limiting map to lat/lon boundary
 
   Example:
 
-  python gen_img.py -s /Source/Data_Fields/MISR_Radiance 100
+  `$python gen_img.py -s /Source/Data_Fields/MISR_Radiance 100`
 
   The above command will generate images by subsetting every 100th data point.
   
