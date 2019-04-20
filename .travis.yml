@@ -1,0 +1,23 @@
+# Disable sudo to speed up the build
+sudo: false
+
+# Set the build language to Python
+language: python
+
+# Set the python versions
+python:
+  - 2.7
+  - 2.7
+  - 3.3
+  - 3.4
+  - 3.5
+  - 3.6
+  - 3.7
+# Install the codecov pip dependency
+install:
+  - python setup.py install
+  - pip install coverage
+
+# Run the unit test
+script:
+  - nosetests -v --with-coverage --cover-tests --cover-package=tests
