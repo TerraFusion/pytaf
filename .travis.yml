@@ -11,13 +11,14 @@ dist:
   - xenial
 
 matrix:
-    include:
-        - os: osx
-          language: generic
-          env:
-	    - CPP=/usr/local/opt/llvm/bin/clang
-	    - CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
-	    - LDFLAGS=-L/usr/local/opt/llvm/lib
+  include:
+    - os: osx
+      language: generic
+      env:
+        - CPP=/usr/local/opt/llvm/bin/clang
+#        - LDFLAGS="-L/usr/local/opt/llvm/lib"
+# 	- CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
+
 
 # Disable sudo to speed up the build
 sudo: false
@@ -31,9 +32,9 @@ python:
   - 3.6
   - 3.7
   
-# before_install:
-#   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install llvm; fi
-#   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ln -s /usr/local/opt/llvm/bin/clang /usr/local/bin/clang-omp; fi
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install llvm; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ln -s /usr/local/opt/llvm/bin/clang /usr/local/bin/clang-omp; fi
   
 install:
   - pip install -r requirements.txt
