@@ -10,7 +10,7 @@ dist:
 matrix:
   include:
     - os: osx
-    language: generic
+      language: generic
 
 # Disable sudo to speed up the build.
 sudo: false
