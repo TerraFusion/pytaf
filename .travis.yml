@@ -1,3 +1,8 @@
+os:
+  - windows
+  - linux
+  - osx
+  
 # Disable sudo to speed up the build
 sudo: false
 
@@ -7,12 +12,12 @@ language: python
 # Set the python versions
 python:
   - 2.7
-  - 2.7
-  - 3.3
   - 3.4
   - 3.5
   - 3.6
   - 3.7
+  dist: xenial
+  sudo: true
 # Install the codecov pip dependency
 install:
   - pip install -r requirements.txt
