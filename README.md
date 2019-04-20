@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/TerraFusion/pytaf.svg?branch=master)](https://travis-ci.org/TerraFusion/pytaf)
+
 # pytaf
 Python interface for Terra Advanced Fusion
 
