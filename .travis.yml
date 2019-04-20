@@ -28,9 +28,9 @@ python:
   - 3.7
   
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install llvm; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install llvm && brew install libomp; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ln -s /usr/local/opt/llvm/bin/clang /usr/local/bin/clang-omp; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CPP=/usr/local/opt/llvm/bin/clang && export CPPFLAGS="-I/usr/local/opt/llvm/include" && export LDFLAGS="-L/usr/local/opt/llvm/lib"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CPP=/usr/local/opt/llvm/bin/clang && export CPPFLAGS="-I/usr/local/opt/llvm/include -Xpreprocessor -fopenmp   -lomp" && export LDFLAGS="-L/usr/local/opt/llvm/lib"; fi
   
 install:
   - pip install -r requirements.txt
