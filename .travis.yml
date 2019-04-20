@@ -14,9 +14,10 @@ matrix:
     include:
         - os: osx
           language: generic
-          env: CPP=/usr/local/opt/llvm/bin/clang
-	  env: CPPFLAGS=-I/usr/local/opt/llvm/include -fopenmp
-	  env: LDFLAGS = -L/usr/local/opt/llvm/lib
+          env:
+	    - CPP=/usr/local/opt/llvm/bin/clang
+	    - CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
+	    - LDFLAGS=-L/usr/local/opt/llvm/lib
 
 # Disable sudo to speed up the build
 sudo: false
