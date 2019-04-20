@@ -3,17 +3,18 @@ language: python
 
 os:
   - linux
-  - osx
 # Windows is not supported yet.
 #  - windows
+# Mac is not supported for language:python. Use language:generic.
+#  - osx
 
 dist:
   - xenial
 
-# matrix:
-#   include:
-#     - os: osx
-#      language: generic
+matrix:
+  include:
+    - os: osx
+    language: generic
 
 # Disable sudo to speed up the build
 sudo: false
@@ -31,7 +32,6 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install llvm && brew install libomp; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ln -s /usr/local/opt/llvm/bin/clang /usr/local/bin/clang-omp; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CPP=/usr/local/opt/llvm/bin/clang && export CPPFLAGS="-I/usr/local/opt/llvm/include -Xpreprocessor -fopenmp   -lomp" && export LDFLAGS="-L/usr/local/opt/llvm/lib"; fi
-#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin/:/usr/local/bin/:$PATH"; fi
  
 install:
   - pip install -r requirements.txt
