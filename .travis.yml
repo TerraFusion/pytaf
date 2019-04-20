@@ -14,10 +14,9 @@ matrix:
     include:
         - os: osx
           language: generic
-          env: PYTHON=3.4.4
-        - os: osx
-          language: generic
-          env: PYTHON=3.5.1
+          env: CPP=/usr/local/opt/llvm/bin/clang
+	  env: CPPFLAGS=-I/usr/local/opt/llvm/include -fopenmp
+	  env: LDFLAGS = -L/usr/local/opt/llvm/lib
 
 # Disable sudo to speed up the build
 sudo: false
@@ -30,6 +29,10 @@ python:
   - 3.5
   - 3.6
   - 3.7
+  
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install llvm; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ln -s /usr/local/opt/llvm/bin/clang /usr/local/bin/clang-omp ; fi
   
 install:
   - pip install -r requirements.txt
