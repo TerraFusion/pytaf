@@ -53,7 +53,7 @@ def find_nn(np.ndarray[double, ndim=2, mode="c"] psouLat not None,
             np.ndarray[int, ndim=1, mode="c"] tarNNSouID not None,
             np.ndarray[double, ndim=2, mode="c"] tarNNDis not None,
             int nTar, double maxR):
-
+    """This function is not used. Instead, find_nn_block_index() is used."""
     cdef double * pLat = &psouLat[0, 0]
     cdef double * pLon = &psouLon[0, 0]
 
@@ -73,7 +73,7 @@ def find_nn_block_index(
         np.ndarray[int, ndim=1, mode="c"] tarNNSouID not None,
         np.ndarray[double, ndim=2, mode="c"] tarNNDis not None,
         int nTar, double maxR):
-
+    """Find the nearest neighboring source cell's index for each target cell."""
     cdef double * pLat = &psouLat[0, 0]
     cdef double * pLon = &psouLon[0, 0]
     nearestNeighborBlockIndex(& pLat, & pLon, nSou,
@@ -86,6 +86,7 @@ def interpolate_nn(np.ndarray[double, ndim=2, mode="c"] souVal not None,
                    np.ndarray[double, ndim=2, mode="c"] tarVal not None,
                    np.ndarray[int, ndim=1, mode="c"] tarNNSouID not None,
                    int nTar):
+    """ Nearest neighbor interpolation """
     nnInterpolate( & souVal[0, 0], & tarVal[0, 0], & tarNNSouID[0], nTar)
     return None
 
@@ -97,15 +98,13 @@ def interpolate_summary(np.ndarray[double, ndim=2, mode="c"] souVal not None,
                         np.ndarray[double, ndim=2, mode="c"] tarSD not None,
                         np.ndarray[int, ndim=2, mode="c"] nSouPixels not None,
                         int nTar):
+    """ Interpolation (summary) from fine resolution to coarse resolution. """
     summaryInterpolate( & souVal[0, 0], & souNNSouID[0], nSou,
                        & tarVal[0, 0], & tarSD[0, 0], & nSouPixels[0, 0], nTar)
     return None
 
-# Check dimensions if src/trg lat/lon dimensions are 1 or 2.
-
-
 def check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
-
+    """ Check dimensions if src/trg lat/lon dimensions are 1 or 2. """
     if psouLat.ndim < 1 or psouLat.ndim > 2:
         print('No. of source latitude dimensions should be 1 or 2.')
         return False
@@ -130,10 +129,8 @@ def check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         return False
     return True
 
-# Wrapper for any projection using nn interpolation.
-
-
 def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
+    """ Wrapper for any projection using nn interpolation. """
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         # Default - all 2D
         slon = psouLon
@@ -159,10 +156,8 @@ def resample_n(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
     else:
         return None
 
-# Wrapper for geographic projection using nn interpolation.
-
-
 def resample_n_g(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
+    """ Wrapper for geographic projection using nn interpolation. """
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         if ptarLat.ndim == 1:
             # Generate 2D lat/lon.
@@ -177,11 +172,9 @@ def resample_n_g(psouLat, psouLon, ptarLat, ptarLon, psouVal, r):
     else:
         return None
 
-# Wrapper for any projection using summary interpolation.
-
-
 def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
                tarSD, nSouPixels):
+    """ Wrapper for any projection using summary interpolation. """
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         # Default - all 2D
         slon = psouLon
@@ -208,11 +201,9 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
     else:
         return None
 
-# Wrapper for geographic projection using summary interpolation.
-
-
 def resample_s_g(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
                  tarSD, nSouPixels):
+    """ Wrapper for geographic projection using summary interpolation. """
     if check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
         if ptarLat.ndim == 1:
             # Generate 2D lat/lon.
@@ -228,12 +219,9 @@ def resample_s_g(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
     else:
         return None
 
-# Wrapper for getting the target values.
-
-
 def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
              r, s=False, tarSD=None, nSouPixels=None):
-
+    """ Wrapper for getting the target values. """
     nx = ptarLat.shape[1]
     ny = ptarLat.shape[0]
     n_trg = nx * ny
