@@ -154,7 +154,6 @@ struct LonBlocks * pointIndexOnLatLon(double ** plat, double ** plon, int * oriI
 		}
 	}
 
-        /*
 	for(i = 0; i < nBlockY; i++) {
             if(pointsInB[i] != NULL)
                 free(pointsInB[i]);
@@ -163,6 +162,7 @@ struct LonBlocks * pointIndexOnLatLon(double ** plat, double ** plon, int * oriI
 
         if(pointsInB != NULL)
             free(pointsInB);
+/*
         if(lon != NULL)
             free(lon);
         if(lat != NULL)
@@ -417,7 +417,7 @@ void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou, d
 		}
 			
 	}
-        /*
+
         if (souID != NULL)
             free(souID);
 	for(i = 0; i < nBlockY; i++) {
@@ -427,7 +427,6 @@ void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou, d
 	}
         if (souIndex != NULL)
             free(souIndex);
-        */
 	return; 
 }
 
