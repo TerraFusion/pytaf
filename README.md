@@ -27,7 +27,7 @@ First, import the package.
 
 `import pytaf`
 
-Second, call the resample function. The are two high-level functions.
+Second, call the resample function. There are two high-level functions.
 
 * resample_n(): nearest neighbor interpolation
 * resample_s(): summary interpolation
@@ -49,8 +49,8 @@ Here is the workflow. The [AFtool.cpp](https://github.com/TerraFusion/advancedFu
 dataset that corresponds to target lat/lon.
 4. Use pytaf.interpolate_nn() function to retrieve values from the source
 using the indices.
-5. Plot data for comparison or save the interpolated data in HDF5 dataset.
-6. In the future, may save the data in  netcdf-4 or geotiff.
+5. Plot the interpolated data for comparison or save them as an HDF5 dataset.
+6. Alternatively, you may want to save the data in netcdf-4 or geotiff format.
 
 See [modis2ug.py](modis2ug.py) for the complete code.
 
