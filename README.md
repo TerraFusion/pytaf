@@ -10,12 +10,34 @@ See [example.py](example.py) for usage.
 
 ## Installation
 
+If you're new to Python, see our
+[Wiki page](https://github.com/TerraFusion/pytaf/wiki) for complete guide.
+
 Use `$pip install -r requirements.txt` to install required packages.
-Then, run `$python setup.py install`.
+Then, run `$pip install .` or `$python setup.py install`.
+
 
 ## Test
 
-Use `$python setup.py test` or `$nosetests`.
+Use `$nosetests` or `$python setup.py test`.
+
+## Usage
+
+First, import the package.
+
+`import pytaf`
+
+Second, call the resample function. The are two high-level functions.
+
+* resample_n(): nearest neighbor interpolation
+* resample_s(): summary interpolation
+
+```
+target_data = pytaf.resample_s(source_lat, sourrce_lon, target_lat, target_lon, 
+	                      source_data, max_radius, std_dev, no_pixels)
+```			    
+			    
+See [Wiki page](https://github.com/TerraFusion/pytaf/wiki) for details.
 
 ## MODIS to User-defined grid
 
@@ -67,9 +89,9 @@ You can compare the above plot with CERES data plot from BF file.
 
   -s: do not apply scale/offset. do not show color bar.
   
-  stride: subsetting stride for large dataset.
-  
   -z: zoom image by limiting map to lat/lon boundary
+
+  stride: subsetting stride for large dataset.
 
   Example:
 
@@ -77,7 +99,6 @@ You can compare the above plot with CERES data plot from BF file.
 
   The above command will generate images by subsetting every 100th data point.
   
-
 
   
 ##  TO-DO
