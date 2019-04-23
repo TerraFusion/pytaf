@@ -33,11 +33,11 @@ Second, call the resample function. There are two high-level functions.
 * resample_s(): summary interpolation
 
 ```
-target_data = pytaf.resample_s(source_lat, sourrce_lon, target_lat, target_lon, 
-	                      source_data, max_radius, std_dev, no_pixels)
+target_data = pytaf.resample_s(source_lat, source_lon, target_lat, target_lon, 
+	                       source_data, max_radius, std_dev, no_pixels)
 ```			    
 			    
-See [Wiki page](https://github.com/TerraFusion/pytaf/wiki) for details.
+See [Wiki page](https://github.com/TerraFusion/pytaf/wiki/User-Guide) for details.
 
 ## MODIS to User-defined grid
 
