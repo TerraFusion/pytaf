@@ -33,7 +33,7 @@ print(c1)
 f = np.arange(12, dtype=np.float64).reshape((3,4))
 print('Testing block index build')
 print('Index ID value before testing')
-pytaf.find_nn_block_index(d, e, 3, a, b, c, f, 3, 90.0)
+pytaf.find_nn_block_index(d, e, 3, a, b, c, f, 3, 10000.0)
 print('Index ID value after testing')
 print(c)
 

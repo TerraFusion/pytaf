@@ -27,7 +27,7 @@ struct LonBlocks {
 	int * indexID;
 };
 
-struct LonBlocks * pointIndexOnLatLon(double ** plat, double ** plon, int * oriID, int count, int nBlockY, double maxradian) {
+struct LonBlocks * pointIndexOnLatLon(double ** plat, double ** plon, double*newLat, double*newLon,int * oriID, int count, int nBlockY, double maxradian) {
 
 	double *lat = *plat;
 	double *lon = *plon;
@@ -127,6 +127,7 @@ struct LonBlocks * pointIndexOnLatLon(double ** plat, double ** plon, int * oriI
 	}
 
 
+#if 0
 	double * newLat = NULL;
 	double * newLon = NULL;
 	if(NULL == (newLon = (double *)malloc(sizeof(double) * count))) {
@@ -137,6 +138,7 @@ struct LonBlocks * pointIndexOnLatLon(double ** plat, double ** plon, int * oriI
 		printf("ERROR: Out of memory at line %d in file %s\n", __LINE__, __FILE__);
 		exit(1);
 	}
+#endif
 	
 	for(i = 0; i < count; i++) {
 	
@@ -154,7 +156,6 @@ struct LonBlocks * pointIndexOnLatLon(double ** plat, double ** plon, int * oriI
 		}
 	}
 
-        /*
 	for(i = 0; i < nBlockY; i++) {
             if(pointsInB[i] != NULL)
                 free(pointsInB[i]);
@@ -163,14 +164,15 @@ struct LonBlocks * pointIndexOnLatLon(double ** plat, double ** plon, int * oriI
 
         if(pointsInB != NULL)
             free(pointsInB);
+#if 0
         if(lon != NULL)
             free(lon);
         if(lat != NULL)
             free(lat);
-        */
 	*plon = newLon;
 	*plat = newLat;
 
+#endif
 	return blockIndex;
 }
 
@@ -325,10 +327,23 @@ void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou, d
 		exit(1);
 	}
 
-	struct LonBlocks * souIndex = pointIndexOnLatLon(psouLat, psouLon, souID, nSou, nBlockY, blockSizeRadian);
+	double * newLat = NULL;
+	double * newLon = NULL;
+	if(NULL == (newLon = (double *)malloc(sizeof(double) * nSou))) {
+		printf("ERROR: Out of memory at line %d in file %s\n", __LINE__, __FILE__);
+		exit(1);
+	} 
+	if(NULL == (newLat = (double *)malloc(sizeof(double) * nSou))) {
+		printf("ERROR: Out of memory at line %d in file %s\n", __LINE__, __FILE__);
+		exit(1);
+	}
 
+	struct LonBlocks * souIndex = pointIndexOnLatLon(psouLat, psouLon, newLat,newLon,souID, nSou, nBlockY, blockSizeRadian);
+
+#if 0
 	souLat = *psouLat;
 	souLon = *psouLon;
+#endif
 
 #pragma omp parallel for private(j, k, kk, l)
 	for(i = 0; i < nTar; i ++) {
@@ -363,8 +378,12 @@ void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou, d
 			if(souIndex[j].nBlocks == 1) {
 				for(l = souIndex[j].indexID[0]; l < souIndex[j].indexID[1]; l++) {
 					
+#if 0
 					sLat = souLat[l];
 					sLon = souLon[l];
+#endif
+					sLat = newLat[l];
+					sLon = newLon[l];
 
 					pDis = acos(sin(tLat) * sin(sLat) + cos(tLat) * cos(sLat) * cos(tLon - sLon));
 
@@ -386,8 +405,12 @@ void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou, d
 					}
 					for(l = souIndex[j].indexID[kk]; l < souIndex[j].indexID[kk+1]; l++) {
 						
+#if 0
 						sLat = souLat[l];
 						sLon = souLon[l];
+#endif
+						sLat = newLat[l];
+						sLon = newLon[l];
 
 						pDis = acos(sin(tLat) * sin(sLat) + cos(tLat) * cos(sLat) * cos(tLon - sLon));
 
@@ -417,17 +440,18 @@ void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou, d
 		}
 			
 	}
-        /*
-        if (souID != NULL)
-            free(souID);
+
+	if (souID != NULL)
+		free(souID);
 	for(i = 0; i < nBlockY; i++) {
             // printf("%d,\t%lf\n", souIndex[i].nBlocks, souIndex[i].blockSizeR);
-            if (souIndex[i].indexID != NULL)
-		free(souIndex[i].indexID);
+		if (souIndex[i].indexID != NULL)
+			free(souIndex[i].indexID);
 	}
-        if (souIndex != NULL)
-            free(souIndex);
-        */
+	if (souIndex != NULL)
+		free(souIndex);
+	free(newLat);
+	free(newLon);
 	return; 
 }
 
