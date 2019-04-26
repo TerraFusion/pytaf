@@ -290,7 +290,8 @@ void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou, d
 	double * souLat = *psouLat;
 	double * souLon = *psouLon;
 
-	const double earthRadius = 6367444;
+	//const double earthRadius = 6367444;
+	const double earthRadius = 6371009;
 	double maxradian = maxR / earthRadius;
 
 	double blockSizeRadian = maxradian;
@@ -722,7 +723,7 @@ void summaryInterpolate(double * souVal, int * souNNTarID, int nSou, double * ta
 	for(i = 0; i < nSou; i++) {
 		
 		nnTarID = souNNTarID[i];
-		if(nnTarID > 0 && souVal[i] >= 0) {
+		if(nnTarID >= 0 && souVal[i] >= 0) {
 			tarVal[nnTarID] += souVal[i];
 			if (tarSD != NULL) {
 				tarSD[nnTarID] += souVal[i] * souVal[i];

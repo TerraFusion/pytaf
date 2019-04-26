@@ -187,7 +187,7 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
             # Generate 2D lat/lon.
             slat = psouLat.reshape(psouLat.size, 1)
             slon = psouLon.reshape(psouLon.size, 1)
-            sval = psouLon.reshape(psouVal.size, 1)
+            sval = psouVal.reshape(psouVal.size, 1)
         if ptarLat.ndim == 1:
             tlat = ptarLat.reshape(ptarLat.size, 1)
             tlon = ptarLon.reshape(ptarLon.size, 1)
