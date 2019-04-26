@@ -21,8 +21,16 @@ class TestResampleS(TestCase):
                       5.235988e-02, 6.981317e-02,  8.726646e-02,
                       1.047198e-01,  1.221730e-01, -9.990000e+02,
                       1.570796e-01,  1.745329e-01,  1.919862e-01])
+        i = np.array([[-999.,    0.,    0.,    0.],
+                      [   0.,    0.,    0.,    0.],
+                      [-999.,    0.,    0.,    0.]])
+        j = np.array([[0, 1, 1, 1],
+                      [1, 1, 1, 1],
+                      [0, 1, 1, 1]])
         try:
             np.testing.assert_almost_equal(g, h)
+            np.testing.assert_almost_equal(self.tsd, i)
+            np.testing.assert_almost_equal(self.npix, j)
             res = True
         except AssertionError as err:
             res = False
