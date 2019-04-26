@@ -182,7 +182,9 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
         tlon = ptarLon
         tlat = ptarLat
         sval = psouVal
-
+        tstd = tarSD
+        tnpx = nSouPixels
+        
         if psouLat.ndim == 1:
             # Generate 2D lat/lon.
             slat = psouLat.reshape(psouLat.size, 1)
@@ -191,13 +193,15 @@ def resample_s(psouLat, psouLon, ptarLat, ptarLon, psouVal, r,
         if ptarLat.ndim == 1:
             tlat = ptarLat.reshape(ptarLat.size, 1)
             tlon = ptarLon.reshape(ptarLon.size, 1)
+            tstd = tarSD.reshape(tarSD.size, 1)
+            tnpx = nSouPixels.reshape(nSouPixels.size, 1)
             trg = resample(slat, slon, tlat, tlon, sval, r,
-                           True, tarSD, nSouPixels)
+                           True, tstd, tnpx)
             # If target is 1D lat/lon, return value should be 1D.
             return trg.ravel()
         else:
             return resample(slat, slon, tlat, tlon, sval, r,
-                            True, tarSD, nSouPixels)
+                            True, tstd, tnpx)
     else:
         return None
 
