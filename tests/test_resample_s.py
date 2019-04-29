@@ -19,19 +19,14 @@ class TestResampleS(TestCase):
         npix1 = np.arange(12, dtype=np.int32)
         g = pytaf.resample_s(slat, slon, tlat, tlon, sdata,
                              self.r, tsd1, npix1)
-        h = np.array([-9.990000e+02,  1.745329e-02,  3.490659e-02,
-                      5.235988e-02, 6.981317e-02,  8.726646e-02,
-                      1.047198e-01,  1.221730e-01, -9.990000e+02,
-                      1.570796e-01,  1.745329e-01,  1.919862e-01])
-        i = np.array([-999.,    0.,    0.,    0.,
-                         0.,    0.,    0.,    0.,
-                      -999.,    0.,    0.,    0.])
-        j = np.array([0, 1, 1, 1,
-                      1, 1, 1, 1,
-                      0, 1, 1, 1])
+        h = np.array([0., -999., -999., -999., -999., -999., -999., -999.,
+                      -999., -999., -999., -999.])
+        j = np.array([1, 0, 0, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 0])
         try:
             np.testing.assert_almost_equal(g, h)
-            np.testing.assert_almost_equal(tsd1, i)
+            np.testing.assert_almost_equal(tsd1, h)
             np.testing.assert_almost_equal(npix1, j)
             res = True
         except AssertionError as err:
@@ -49,7 +44,7 @@ class TestResampleS(TestCase):
         g = pytaf.resample_s(slat, slon, tlat, tlon, sdata,
                              self.r, self.tsd, self.npix)
         h = np.array(
-            [[-999., -999., -999., -999.],
+            [[0., -999., -999., -999.],
              [-999., -999., -999., -999.],
              [-999., -999., -999., -999.]])
         try:
@@ -71,9 +66,10 @@ class TestResampleS(TestCase):
         npix1 = np.arange(12, dtype=np.int32)
         g = pytaf.resample_s(slat, slon, tlat, tlon, sdata,
                              self.r, tsd1, npix1)
-        h = np.array([-999., -999., -999., -999., -999., -999., -999., -999.,
+        h = np.array([0., -999., -999., -999., -999., -999., -999., -999.,
                       -999.,-999., -999., -999.])
-        j = np.zeros(12)        
+        j = np.zeros(12)
+        j[0] = 1
         try:
             np.testing.assert_almost_equal(g, h)
             np.testing.assert_almost_equal(tsd1, h)
@@ -94,9 +90,9 @@ class TestResampleS(TestCase):
         g = pytaf.resample_s(slat, slon, tlat, tlon, sdata,
                              self.r, self.tsd, self.npix)
         h = np.array(
-            [[-9.9900000e+02,  1.7453293e-02,  3.4906585e-02,  5.2359878e-02],
-             [ 6.9813170e-02,  8.7266463e-02,  1.0471976e-01,  1.2217305e-01],
-             [-9.9900000e+02,  1.5707963e-01,  1.7453293e-01,  1.9198622e-01]])
+            [[   0., -999., -999., -999.],
+             [-999., -999., -999., -999.],
+             [-999., -999., -999., -999.]])
         try:
             np.testing.assert_almost_equal(g, h)
             res = True

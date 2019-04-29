@@ -15,7 +15,6 @@ class TestInterpolateSummary(TestCase):
                                   tdata.size)
         try:
             h = sdata
-            h[0][0] = -999.0
             np.testing.assert_almost_equal(tdata, h, decimal=8)
             res = True
         except AssertionError as err:

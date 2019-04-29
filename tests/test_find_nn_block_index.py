@@ -19,9 +19,9 @@ class TestFindNNBlockIndex(TestCase):
         index_o = np.arange(12, dtype=np.int32)
         index_o[8] = -1
         # distnace_o[8] must be -1.0
-        distance_o = [[ 0.,  0.,  0.,  0.09488231],
-                      [ 0.09488231,  0.,  0.09488231,  0.09488231],
-                      [-1.,  0.,  0.09488231,  0.]]
+        distance_o = [[ 0.,  0.,  0.,  0.09493543],
+                      [ 0.09493543,  0.,  0.09493543,  0.09493543],
+                      [-1.,  0.,  0.09493543,  0.]]
         try:
             np.testing.assert_array_equal(index, index_o)
             np.testing.assert_almost_equal(distance, distance_o, decimal=8)
