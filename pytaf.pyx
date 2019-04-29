@@ -265,3 +265,12 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
                             r)
         interpolate_nn(psouVal, trg_data, i, n_trg)
         return trg_data
+
+def get_source_list(slat, slon, sval, r, tlat, tlon):    
+    """ Get a list of lat/lon and source values used for a target pixel. """
+    # Subset of slat.
+    lats = []
+    lons = []
+    vals = []
+    tval = 0.0
+    return lats, lons, vals, tval
