@@ -58,8 +58,8 @@ def find_nn(np.ndarray[double, ndim=2, mode="c"] psouLat not None,
     cdef double * pLon = &psouLon[0, 0]
 
     nearestNeighbor(& pLat, & pLon, nSou,
-                     & tarLat[0, 0], & tarLon[0, 0], & tarNNSouID[0],
-                     & tarNNDis[0, 0], nTar, maxR)
+                    & tarLat[0, 0], & tarLon[0, 0], & tarNNSouID[0],
+                    & tarNNDis[0, 0], nTar, maxR)
 
 
 @cython.boundscheck(False)
@@ -77,8 +77,8 @@ def find_nn_block_index(
     cdef double * pLat = &psouLat[0, 0]
     cdef double * pLon = &psouLon[0, 0]
     nearestNeighborBlockIndex(& pLat, & pLon, nSou,
-                               & tarLat[0, 0], & tarLon[0, 0], & tarNNSouID[0],
-                               & tarNNDis[0, 0], nTar, maxR)
+                              & tarLat[0, 0], & tarLon[0, 0], & tarNNSouID[0],
+                              & tarNNDis[0, 0], nTar, maxR)
     return None
 
 
@@ -100,7 +100,7 @@ def interpolate_summary(np.ndarray[double, ndim=2, mode="c"] souVal not None,
                         int nTar):
     """ Interpolation (summary) from fine resolution to coarse resolution. """
     summaryInterpolate( & souVal[0, 0], & souNNSouID[0], nSou,
-                       & tarVal[0, 0], & tarSD[0, 0], & nSouPixels[0, 0], nTar)
+                        & tarVal[0, 0], & tarSD[0, 0], & nSouPixels[0, 0], nTar)
     return None
 
 def check_dimensions(psouLat, psouLon, ptarLat, ptarLon, psouVal):
@@ -273,4 +273,29 @@ def get_source_list(slat, slon, sval, r, tlat, tlon):
     lons = []
     vals = []
     tval = 0.0
+
+    nx = tlat.shape[1]
+    ny = tlat.shape[0]
+    n_trg = nx * ny
+    
+    n_src = slat.size
+    sx = slat.shape[0]
+    sy = slat.shape[1]
+    i = np.arange(n_src, dtype=np.int32)
+    d = np.arange(n_src, dtype=np.float64).reshape((sy, sx))
+
+    # Find index.    
+    find_nn_block_index(tlat, tlon,
+                        n_trg,
+                        slat, slon,
+                        i, d,
+                        n_src,
+                        r)
+    # TO-DO: Use index to collect source lat/lon values.
+    # <hyokyung 2019.04.30. 09:34:34>
+    for x in np.nditer(i):
+        if x != -1:
+            lats.append(x)
+            lons.append(x)
+
     return lats, lons, vals, tval

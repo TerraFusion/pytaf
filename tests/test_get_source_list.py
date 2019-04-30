@@ -10,11 +10,12 @@ class TestGetSourceList(TestCase):
         slon = np.arange(12, dtype=np.float64).reshape((3,4))        
         sdata = np.arange(12, dtype=np.float64).reshape((3,4))
         r = 555
-        tlat = 5.5
-        tlon = 5.5
+        tlat = np.array([[5.5]])
+        tlon = np.array([[5.5]])
         a, b, c, d = pytaf.get_source_list(slat, slon, sdata, r, tlat, tlon)
         try:
             np.testing.assert_almost_equal(a, [], decimal=8)
+            np.testing.assert_almost_equal(b, [], decimal=8)            
             res = True
         except AssertionError as err:
             res = False
