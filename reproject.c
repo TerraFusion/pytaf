@@ -241,7 +241,7 @@ void nearestNeighborBlockIndex(double ** psouLat, double ** psouLon, int nSou, d
 		int rowID, colID;
 		double pDis;
 		double nnDis;
-		int nnSouID;
+		int nnSouID= -1;
 /*
 		if(i == 0) {
 			printf("%d\n", omp_get_num_threads());
