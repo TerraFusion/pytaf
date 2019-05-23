@@ -244,37 +244,3 @@ def resample(psouLat, psouLon, ptarLat, ptarLon, psouVal,
                             r)
         interpolate_nn(psouVal, trg_data, i, n_trg)
         return trg_data
-
-def get_source_list(slat, slon, sval, r, tlat, tlon):    
-    """ Get a list of lat/lon and source values used for a target pixel. """
-    # Subset of slat.
-    lats = []
-    lons = []
-    vals = []
-    tval = 0.0
-
-    nx = tlat.shape[1]
-    ny = tlat.shape[0]
-    n_trg = nx * ny
-    
-    n_src = slat.size
-    sx = slat.shape[0]
-    sy = slat.shape[1]
-    i = np.arange(n_src, dtype=np.int32)
-    d = np.arange(n_src, dtype=np.float64).reshape((sy, sx))
-
-    # Find index.    
-    find_nn_block_index(tlat, tlon,
-                        n_trg,
-                        slat, slon,
-                        i, d,
-                        n_src,
-                        r)
-    # TO-DO: Use index to collect source lat/lon values.
-    # <hyokyung 2019.04.30. 09:34:34>
-    for x in np.nditer(i):
-        if x != -1:
-            lats.append(x)
-            lons.append(x)
-
-    return lats, lons, vals, tval
