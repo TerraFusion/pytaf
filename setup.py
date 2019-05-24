@@ -25,7 +25,7 @@ from Cython.Distutils import build_ext
 import numpy
 
 setup(name='pytaf',
-      version='0.0.1',
+      version='1.0.0',
       description='Python wrapper for advanced funsion reprojection',
       author='TerraFusion Team',
       author_email='eoshelp@hdfgroup.org',
