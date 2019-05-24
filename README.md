@@ -39,12 +39,13 @@ See [example.py](example.py) for usage.
 See [Wiki page](https://github.com/TerraFusion/pytaf/wiki/User-Guide) for details.
 
 ## Example
+
 run `python example.py` to see how resample_n() and resample_s() work.
+
 More examples can be found under directory `examples`.
+
 TerraFusion examples can be found under subdirectory `AF`. More information on the TerraFusion examples, check
-[wiki page](https://github.com/TerraFusion/pytaf/wiki/TerraFusion-Examples)
-
-
+[wiki page](https://github.com/TerraFusion/pytaf/wiki/TerraFusion-Examples) for details.
 
 
 ## Limitation
