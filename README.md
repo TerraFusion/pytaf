@@ -14,6 +14,9 @@ If you're new to Python, see our
 Use `$pip install -r requirements.txt` to install required packages.
 Then, run `$pip install .` or `$python setup.py install`.
 
+If you have openMP installed, you can take advantage of openMP by using
+ `$python setup.py.omp install`.
+
 
 ## Test
 
