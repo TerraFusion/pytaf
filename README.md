@@ -52,4 +52,4 @@ TerraFusion examples can be found under subdirectory `AF`. More information on t
 The pytaf.find_nn_block_index() function modifies target lat/lon values.
 Thus, you need to make copies before you call resample_n() and resample_s() functions.
 
-The resample_s assumes data value >=0. Both functions assign -999.0 to data points that no valid values can be found.
+The resample_s assumes valid data value >=0. Both functions assign -999.0 to data points that no valid values can be found.
