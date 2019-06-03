@@ -1,10 +1,9 @@
 [![Build Status](https://travis-ci.org/TerraFusion/pytaf.svg?branch=master)](https://travis-ci.org/TerraFusion/pytaf)
 
 # pytaf
-Python interface for Terra Advanced Fusion
+Python interface for Terra Advanced Fusion Resample/Reprojection functions
 
   * It is Cython-based.
-  * It covers the basic functions in [advancedFusion/reproject.cpp](https://github.com/TerraFusion/advancedFusion/blob/master/src/reproject.cpp).
 
 
 ## Installation
